@@ -8,47 +8,51 @@
         .contact-header {
             text-align: center;
             margin: 20px;
+            font-size: 2em;
+            color: #333;
         }
         .contact-info {
-            width: 60%;
+            width: 70%;
             margin: auto;
             background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
         .contact-info img {
-            width: 100%;
-            border-radius: 8px;
+            width: 80%; /* Limit the width */
+            max-height: 400px; /* Limit the height */
+            border-radius: 15px;
             margin-bottom: 20px;
+            object-fit: cover;
         }
-        .sample-overlay {
-            position: relative;
-            text-align: center;
-            color: white;
-        }
-        .sample-overlay img {
-            width: 100%;
-            border-radius: 8px;
-        }
-        .sample-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 5em;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        /* Two-column layout for contact sections */
+        .contact-sections {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
         }
         .contact-section {
-            margin-top: 20px;
+            flex: 1 1 45%; /* Each section takes up about 45% of the row */
+            max-width: 45%;
+            background-color: #fff;
             padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
             font-size: 1.1em;
             color: #333;
+            text-align: left;
+        }
+        .contact-section h2 {
+            font-size: 1.2em;
+            color: #007bff;
+            margin-bottom: 0.5em;
         }
         .contact-section p {
-            margin-bottom: 10px;
+            margin: 0;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -78,36 +82,37 @@
 
     <!-- Contact Us Content -->
     <div class="contact-info">
-        <!-- Sample Image with Overlay -->
-        <div class="sample-overlay">
-            <img src="/static/dealership.jpg" alt="Dealership Image">
-            <div class="sample-text">Sample</div>
-        </div>
+        <h1 class="contact-header">Contact Us</h1>
+        
+        <!-- Image Section -->
+        <img src="/static/dealership.jpg" alt="Dealership Image">
 
-        <!-- Contact Sections -->
-        <div class="contact-section">
-            <h2>Contact Customer Service</h2>
-            <p>Email: support@bestcars.com</p>
-        </div>
+        <!-- Contact Sections in Two Columns -->
+        <div class="contact-sections">
+            <div class="contact-section">
+                <h2>Contact Customer Service</h2>
+                <p>Email: support@bestcars.com</p>
+            </div>
 
-        <div class="contact-section">
-            <h2>National Advertising Team</h2>
-            <p>Email: NationalSales@bestcars.com</p>
-        </div>
+            <div class="contact-section">
+                <h2>National Advertising Team</h2>
+                <p>Email: NationalSales@bestcars.com</p>
+            </div>
 
-        <div class="contact-section">
-            <h2>Public Relations Team</h2>
-            <p>Email: PR@bestcars.com</p>
-        </div>
+            <div class="contact-section">
+                <h2>Public Relations Team</h2>
+                <p>Email: PR@bestcars.com</p>
+            </div>
 
-        <div class="contact-section">
-            <h2>Office Contact</h2>
-            <p>Phone: 312-611-1111</p>
-        </div>
+            <div class="contact-section">
+                <h2>Office Contact</h2>
+                <p>Phone: 312-611-1111</p>
+            </div>
 
-        <div class="contact-section">
-            <h2>Become a Car Dealer</h2>
-            <p>Visit: growwithbestcars.com</p>
+            <div class="contact-section">
+                <h2>Become a Car Dealer</h2>
+                <p>Visit: growwithbestcars.com</p>
+            </div>
         </div>
     </div>
 </body>
