@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <style>
+        /* Additional CSS for styling */
+        .contact-header {
+            text-align: center;
+            margin: 20px;
+        }
+        .contact-info {
+            width: 60%;
+            margin: auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .contact-info img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .sample-overlay {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+        .sample-overlay img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .sample-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .contact-section {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 1.1em;
+            color: #333;
+        }
+        .contact-section p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise;">
+        <div class="container-fluid">
+            <h2 style="padding-right: 5%;">Dealerships</h2>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" style="font-size: larger;" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="font-size: larger;" href="/about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" style="font-size: larger;" href="/contact">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Us Content -->
+    <div class="contact-info">
+        <!-- Sample Image with Overlay -->
+        <div class="sample-overlay">
+            <img src="/static/dealership.jpg" alt="Dealership Image">
+            <div class="sample-text">Sample</div>
+        </div>
+
+        <!-- Contact Sections -->
+        <div class="contact-section">
+            <h2>Contact Customer Service</h2>
+            <p>Email: support@bestcars.com</p>
+        </div>
+
+        <div class="contact-section">
+            <h2>National Advertising Team</h2>
+            <p>Email: NationalSales@bestcars.com</p>
+        </div>
+
+        <div class="contact-section">
+            <h2>Public Relations Team</h2>
+            <p>Email: PR@bestcars.com</p>
+        </div>
+
+        <div class="contact-section">
+            <h2>Office Contact</h2>
+            <p>Phone: 312-611-1111</p>
+        </div>
+
+        <div class="contact-section">
+            <h2>Become a Car Dealer</h2>
+            <p>Visit: growwithbestcars.com</p>
+        </div>
+    </div>
+</body>
+</html>
