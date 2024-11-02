@@ -1,63 +1,63 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import logout
-from django.contrib import messages
-from datetime import datetime
-
-from django.http import JsonResponse
-from django.contrib.auth import login, authenticate
+from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
-from django.views.decorators.csrf import csrf_exempt
-from .populate import initiate
-
+from .populate import initiate  # Assuming this is needed for another part of your code
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-
 # Create your views here.
 
-# Create a `login_request` view to handle sign in request
+# Login view to handle sign-in requests
 @csrf_exempt
 def login_user(request):
-    # Get username and password from request.POST dictionary
+    # Get username and password from request body
     data = json.loads(request.body)
-    username = data['userName']
-    password = data['password']
-    # Try to check if provide credential can be authenticated
+    username = data.get('userName')
+    password = data.get('password')
+    
+    # Try to authenticate user
     user = authenticate(username=username, password=password)
-    data = {"userName": username}
+    response_data = {"userName": username}
+
     if user is not None:
-        # If user is valid, call login method to login current user
+        # If user is valid, log them in and return success response
         login(request, user)
-        data = {"userName": username, "status": "Authenticated"}
-    return JsonResponse(data)
+        response_data["status"] = "Authenticated"
+    else:
+        # If authentication fails, add an error status
+        response_data["status"] = "Failed"
 
-# Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+    return JsonResponse(response_data)
 
-# Create a `registration` view to handle sign up request
+# Logout view to handle sign-out requests
+@csrf_exempt
+def logout_user(request):
+    # Log out the user
+    logout(request)
+    # Return a JSON response indicating user is logged out
+    response_data = {"userName": ""}
+    return JsonResponse(response_data)
+
+# Registration view (if needed)
 # @csrf_exempt
-# def registration(request):
-# ...
+# def register_user(request):
+#     # Your registration logic here
+#     pass
 
-# # Update the `get_dealerships` view to render the index page with
-# a list of dealerships
+# Additional views as needed (commented out placeholders)
 # def get_dealerships(request):
-# ...
+#     pass
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-# def get_dealer_reviews(request,dealer_id):
-# ...
+# def get_dealer_reviews(request, dealer_id):
+#     pass
 
-# Create a `get_dealer_details` view to render the dealer details
 # def get_dealer_details(request, dealer_id):
-# ...
+#     pass
 
-# Create a `add_review` view to submit a review
 # def add_review(request):
-# ...
+#     pass

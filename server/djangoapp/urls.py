@@ -8,8 +8,11 @@ urlpatterns = [
     # Path for registration (uncomment if you have a registration view)
     # path('register/', view=views.register_user, name='register'),
 
-    # Path for login
+    # Path for login with trailing slash
     path('login/', view=views.login_user, name='login'),
+
+    # Path for logout with trailing slash
+    path('logout/', view=views.logout_user, name='logout'),
 
     # Path for dealer reviews view (uncomment if applicable)
     # path('dealer/<int:dealer_id>/', view=views.dealer_details, name='dealer_details'),
