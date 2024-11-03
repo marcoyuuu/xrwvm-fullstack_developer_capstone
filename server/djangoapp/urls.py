@@ -4,19 +4,15 @@ from django.conf import settings
 from . import views
 
 app_name = 'djangoapp'
+
 urlpatterns = [
-    # Path for registration
-    path('register/', view=views.registration, name='register'),
+    # Authentication Paths
+    path('register/', views.registration, name='register'),  # Path for user registration
+    path('login/', views.login_user, name='login'),          # Path for user login
+    path('logout/', views.logout_user, name='logout'),       # Path for user logout
 
-    # Path for login with trailing slash
-    path('login/', view=views.login_user, name='login'),
+    # Dealer-related Paths (uncomment and implement as needed)
+    # path('dealer/<int:dealer_id>/', views.dealer_details, name='dealer_details'),  # Path for viewing dealer details
+    # path('dealer/<int:dealer_id>/review/', views.add_review, name='add_review'),    # Path for adding a dealer review
 
-    # Path for logout with trailing slash
-    path('logout/', view=views.logout_user, name='logout'),
-
-    # Path for dealer reviews view (uncomment and implement if applicable)
-    # path('dealer/<int:dealer_id>/', view=views.dealer_details, name='dealer_details'),
-
-    # Path for add a review view (uncomment and implement if applicable)
-    # path('dealer/<int:dealer_id>/review/', view=views.add_review, name='add_review'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

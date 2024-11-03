@@ -10,8 +10,6 @@ from .populate import initiate  # Assuming this is needed for another part of yo
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-# Create your views here.
-
 # Login view to handle sign-in requests
 @csrf_exempt
 def login_user(request):
@@ -43,11 +41,41 @@ def logout_user(request):
     response_data = {"userName": ""}
     return JsonResponse(response_data)
 
-# Registration view (if needed)
-# @csrf_exempt
-# def register_user(request):
-#     # Your registration logic here
-#     pass
+# Registration view to handle sign-up requests
+@csrf_exempt
+def registration(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            username = data.get('userName')
+            password = data.get('password')
+            first_name = data.get('firstName')
+            last_name = data.get('lastName')
+            email = data.get('email')
+            
+            # Check if the username already exists
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({"userName": username, "error": "Already Registered"}, status=400)
+            
+            # Create a new user
+            user = User.objects.create_user(
+                username=username, 
+                password=password, 
+                first_name=first_name, 
+                last_name=last_name, 
+                email=email
+            )
+            login(request, user)
+            
+            # Return a JSON response indicating success
+            return JsonResponse({"userName": username, "status": "Authenticated"})
+        
+        except Exception as e:
+            # Log any exception that occurs
+            logger.error(f"Error in registration: {e}")
+            return JsonResponse({"error": "Registration failed"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
 
 # Additional views as needed (commented out placeholders)
 # def get_dealerships(request):

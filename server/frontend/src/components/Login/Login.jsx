@@ -1,72 +1,93 @@
 import React, { useState } from 'react';
-
 import "./Login.css";
 import Header from '../Header/Header';
 
 const Login = ({ onClose }) => {
-
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [open,setOpen] = useState(true)
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(true);
+  const loginUrl = `${window.location.origin}/djangoapp/login/`;
 
-  let login_url = window.location.origin+"/djangoapp/login";
+  // Helper to get the CSRF token from cookies
+  const getCsrfToken = () => {
+    return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
+  };
 
-  const login = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError(null);  // Clear previous error
 
-    const res = await fetch(login_url, {
+    try {
+      const response = await fetch(loginUrl, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken()
         },
-        body: JSON.stringify({
-            "userName": userName,
-            "password": password
-        }),
-    });
-    
-    const json = await res.json();
-    if (json.status != null && json.status === "Authenticated") {
-        sessionStorage.setItem('username', json.userName);
-        setOpen(false);        
+        body: JSON.stringify({ userName, password }),
+      });
+
+      const data = await response.json();
+      if (data.status === "Authenticated") {
+        sessionStorage.setItem("username", data.userName);
+        setOpen(false);
+      } else {
+        setError("Authentication failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("An error occurred. Please try again.");
     }
-    else {
-      alert("The user could not be authenticated.")
-    }
-};
+  };
 
   if (!open) {
     window.location.href = "/";
-  };
-  
+    return null;
+  }
 
   return (
     <div>
-      <Header/>
-    <div onClick={onClose}>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        className='modalContainer'
-      >
-          <form className="login_panel" style={{}} onSubmit={login}>
-              <div>
-              <span className="input_field">Username </span>
-              <input type="text"  name="username" placeholder="Username" className="input_field" onChange={(e) => setUserName(e.target.value)}/>
-              </div>
-              <div>
-              <span className="input_field">Password </span>
-              <input name="psw" type="password"  placeholder="Password" className="input_field" onChange={(e) => setPassword(e.target.value)}/>            
-              </div>
-              <div>
-              <input className="action_button" type="submit" value="Login"/>
-              <input className="action_button" type="button" value="Cancel" onClick={()=>setOpen(false)}/>
-              </div>
-              <a className="loginlink" href="/register">Register Now</a>
+      <Header />
+      <div onClick={onClose} className="modal-overlay">
+        <div onClick={(e) => e.stopPropagation()} className="modal-container">
+          <form className="login-panel" onSubmit={handleLogin}>
+            <h2 className="login-title">Login</h2>
+            <div className="form-group">
+              <label className="input-label">Username</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                className="input-field"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="input-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                className="input-field"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            <div className="button-group">
+              <button type="submit" className="action-button">Login</button>
+              <button type="button" className="action-button" onClick={() => setOpen(false)}>Cancel</button>
+            </div>
+            <div className="register-link">
+              <a href="/register">Don't have an account? Register here</a>
+            </div>
           </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
