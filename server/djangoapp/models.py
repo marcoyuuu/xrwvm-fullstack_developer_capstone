@@ -1,25 +1,71 @@
-# Uncomment the following imports before adding the Model code
+from django.db import models
+from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 
-# from django.db import models
-# from django.utils.timezone import now
-# from django.core.validators import MaxValueValidator, MinValueValidator
+# Define the current year dynamically
+CURRENT_YEAR = timezone.now().year
+
+class CarMake(models.Model):
+    """
+    Model representing the car make information.
+    Attributes:
+        name (str): The name of the car make.
+        description (str): A brief description of the car make.
+        created_at (datetime): Date when the car make was created.
+        updated_at (datetime): Date when the car make was last updated.
+    """
+    name = models.CharField(max_length=100, unique=True, help_text="Unique name of the car make.")
+    description = models.TextField(blank=True, help_text="Optional description of the car make.")
+    created_at = models.DateTimeField(default=timezone.now, help_text="Date when the car make was created.")
+    updated_at = models.DateTimeField(auto_now=True, help_text="Date when the car make was last updated.")
+
+    def __str__(self):
+        return f"{self.name} - {self.description[:30]}"  # Display name and partial description for readability
 
 
-# Create your models here.
+class CarModel(models.Model):
+    """
+    Model representing the car model details.
+    Attributes:
+        car_make (ForeignKey): ForeignKey to the CarMake model (many-to-one relationship).
+        dealer_id (int): ID that relates to the dealer in an external database.
+        name (str): Name of the car model.
+        type (str): Type of the car model (Sedan, SUV, etc.).
+        year (int): Year the model was manufactured.
+        created_at (datetime): Date when the car model was created.
+        updated_at (datetime): Date when the car model was last updated.
+    """
+    CAR_TYPES = [
+        ('SEDAN', 'Sedan'),
+        ('SUV', 'SUV'),
+        ('WAGON', 'Wagon'),
+        # Add other types if needed
+    ]
 
-# <HINT> Create a Car Make model `class CarMake(models.Model)`:
-# - Name
-# - Description
-# - Any other fields you would like to include in car make model
-# - __str__ method to print a car make object
+    car_make = models.ForeignKey(
+        CarMake, 
+        related_name='models', 
+        on_delete=models.CASCADE, 
+        help_text="Car make associated with this model."
+    )
+    dealer_id = models.PositiveIntegerField(help_text="Reference ID of the dealer.")
+    name = models.CharField(max_length=100, help_text="Name of the car model.")
+    type = models.CharField(
+        max_length=10, 
+        choices=CAR_TYPES, 
+        default='SUV', 
+        help_text="Type of the car model (e.g., Sedan, SUV, Wagon)."
+    )
+    year = models.PositiveIntegerField(
+        validators=[
+            MaxValueValidator(CURRENT_YEAR),
+            MinValueValidator(1980)
+        ],
+        help_text=f"Year the car model was manufactured (1980 - {CURRENT_YEAR})."
+    )
+    created_at = models.DateTimeField(default=timezone.now, help_text="Date when the car model was created.")
+    updated_at = models.DateTimeField(auto_now=True, help_text="Date when the car model was last updated.")
 
+    def __str__(self):
+        return f"{self.car_make.name} {self.name} ({self.year})"  # Display car make, model name, and year for clarity
 
-# <HINT> Create a Car Model model `class CarModel(models.Model):`:
-# - Many-To-One relationship to Car Make model (One Car Make has many
-# Car Models, using ForeignKey field)
-# - Name
-# - Type (CharField with a choices argument to provide limited choices
-# such as Sedan, SUV, WAGON, etc.)
-# - Year (IntegerField) with min value 2015 and max value 2023
-# - Any other fields you would like to include in car model
-# - __str__ method to print a car make object
