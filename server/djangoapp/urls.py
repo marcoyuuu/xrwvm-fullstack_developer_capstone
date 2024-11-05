@@ -10,6 +10,7 @@ urlpatterns = [
     path('register/', views.registration, name='register'),  # Path for user registration
     path('login/', views.login_user, name='login'),          # Path for user login
     path('logout/', views.logout_user, name='logout'),       # Path for user logout
+    path(route='get_cars', view=views.get_cars, name ='getcars'), # Path for get cars
 
     # Dealer-related Paths (uncomment and implement as needed)
     # path('dealer/<int:dealer_id>/', views.dealer_details, name='dealer_details'),  # Path for viewing dealer details
