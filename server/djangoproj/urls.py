@@ -25,8 +25,8 @@ urlpatterns = [
 
     # React frontend paths for dealerships
     path('dealers/', TemplateView.as_view(template_name="index.html"), name='dealers_page'),
-    path('dealer/<int:dealerId>/', TemplateView.as_view(template_name="index.html"), name='dealer_details_page'),
-    path('dealer/<int:dealerId>/add-review/', TemplateView.as_view(template_name="index.html"), name='add_review_page'),
+    path('dealer/<int:dealer_id>/', TemplateView.as_view(template_name="index.html"), name='dealer_details_page'),
+    path('dealer/<int:dealer_id>/add-review/', TemplateView.as_view(template_name="index.html"), name='add_review_page'),
 
     # Serve manifest.json and static assets
     path('manifest.json', serve, {'path': 'manifest.json', 'document_root': settings.STATIC_ROOT}, name='manifest_json'),
@@ -44,7 +44,7 @@ handler500 = 'django.views.defaults.server_error'
 #    - Comments added for clarity on different sections to improve maintainability.
 #
 # 2. **Data Integrity**:
-#    - Used `<int:dealerId>` in URLs to ensure type validation at the routing level for dealer-specific routes.
+#    - Used `<int:dealer_id>` in URLs to ensure type validation at the routing level for dealer-specific routes.
 #    - Consider adding view-level validation for IDs to confirm existence in the database before processing further.
 #
 # 3. **Scalability & Flexibility**:
@@ -55,6 +55,4 @@ handler500 = 'django.views.defaults.server_error'
 #    - Added custom 404 and 500 error views to improve user experience and catch unhandled routes or server errors.
 #    - The `handler404` and `handler500` have been set to use Django's default error views, which can be customized further to create user-friendly error pages.
 #
-# 5. **Manifest and Static Assets Handling**:
-#    - Added a route for `manifest.json` and `favicon.ico` to ensure these essential files are properly served.
-#    - This prevents `404` errors for important resources that the frontend may depend on, improving overall user experience.
+# 5. *
