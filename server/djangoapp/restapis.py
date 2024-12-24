@@ -23,7 +23,7 @@ def get_request(endpoint, **kwargs):
         dict: JSON response from the API if successful, None otherwise.
     """
     params = "&".join(f"{key}={value}" for key, value in kwargs.items())
-    request_url = f"{backend_url}/{endpoint}?{params}".strip("?")
+    request_url = f"{backend_url.rstrip('/')}/{endpoint.lstrip('/')}"
     print(f"GET from {request_url}")
 
     try:
