@@ -6,6 +6,17 @@ from django.conf import settings
 from django.conf.urls import handler404, handler500
 from django.views.defaults import page_not_found, server_error
 from django.views.static import serve
+from django.http import JsonResponse
+import requests
+
+# Function to proxy requests to backend APIs running on a different port
+def proxy_to_backend(request, path):
+    backend_url = f"http://localhost:3030/{path}"  # Update this URL if the backend port changes
+    try:
+        response = requests.get(backend_url)
+        return JsonResponse(response.json(), status=response.status_code)
+    except requests.RequestException as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 urlpatterns = [
     # Admin URL
@@ -28,6 +39,12 @@ urlpatterns = [
     path('dealer/<int:dealer_id>/', TemplateView.as_view(template_name="index.html"), name='dealer_details_page'),
     path('dealer/<int:dealer_id>/add-review/', TemplateView.as_view(template_name="index.html"), name='add_review_page'),
 
+    # Proxy API routes to backend
+    path('djangoapp/fetchDealers/', lambda request: proxy_to_backend(request, 'fetchDealers')),
+    path('djangoapp/fetchDealers/<str:state>/', lambda request, state: proxy_to_backend(request, f'fetchDealers/{state}')),
+    path('djangoapp/dealer/<int:dealer_id>/', lambda request, dealer_id: proxy_to_backend(request, f'fetchDealer/{dealer_id}')),
+    path('djangoapp/reviews/dealer/<int:dealer_id>/', lambda request, dealer_id: proxy_to_backend(request, f'fetchReviews/dealer/{dealer_id}')),
+    
     # Serve manifest.json and static assets
     path('manifest.json', serve, {'path': 'manifest.json', 'document_root': settings.STATIC_ROOT}, name='manifest_json'),
     path('favicon.ico', serve, {'path': 'favicon.ico', 'document_root': settings.STATIC_ROOT}, name='favicon'),
@@ -36,23 +53,3 @@ urlpatterns = [
 # Custom error handling
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'django.views.defaults.server_error'
-
-# Considerations for Professionalism, Data Integrity, and Code Organization:
-#
-# 1. **Code Organization**:
-#    - Grouped the URL patterns logically (admin, application-specific URLs, static pages, React pages).
-#    - Comments added for clarity on different sections to improve maintainability.
-#
-# 2. **Data Integrity**:
-#    - Used `<int:dealer_id>` in URLs to ensure type validation at the routing level for dealer-specific routes.
-#    - Consider adding view-level validation for IDs to confirm existence in the database before processing further.
-#
-# 3. **Scalability & Flexibility**:
-#    - Configured generic paths (`index.html`) to enable frontend React to handle routing after the initial request.
-#    - This ensures that any new React component will be easily integrated without modifying backend URL paths.
-#
-# 4. **Error Handling**:
-#    - Added custom 404 and 500 error views to improve user experience and catch unhandled routes or server errors.
-#    - The `handler404` and `handler500` have been set to use Django's default error views, which can be customized further to create user-friendly error pages.
-#
-# 5. *

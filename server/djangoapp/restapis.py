@@ -3,6 +3,9 @@ import requests
 import os
 from dotenv import load_dotenv
 from requests.exceptions import RequestException
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -11,27 +14,24 @@ load_dotenv()
 backend_url = os.getenv("backend_url", "http://localhost:3030")
 sentiment_analyzer_url = os.getenv("sentiment_analyzer_url", "http://localhost:5050/analyze")
 
-def get_request(endpoint, **kwargs):
+def get_request(url, **kwargs):
     """
-    Makes a GET request to the backend API.
+    Makes a GET request to the specified URL.
 
     Args:
-        endpoint (str): API endpoint to be appended to the backend base URL.
-        kwargs (dict): Key-value pairs for URL parameters.
+        url (str): Full URL to fetch.
+        kwargs (dict): Additional parameters for the request.
 
     Returns:
-        dict: JSON response from the API if successful, None otherwise.
+        dict: Response JSON if successful, None otherwise.
     """
-    params = "&".join(f"{key}={value}" for key, value in kwargs.items())
-    request_url = f"{backend_url.rstrip('/')}/{endpoint.lstrip('/')}"
-    print(f"GET from {request_url}")
-
     try:
-        response = requests.get(request_url, timeout=10)
-        response.raise_for_status()
+        logger.info(f"Making GET request to URL: {url}")
+        response = requests.get(url, params=kwargs, timeout=10)
+        response.raise_for_status()  # Raise an error for 4xx/5xx responses
         return response.json()
-    except RequestException as e:
-        print(f"Network exception occurred: {e}")
+    except requests.RequestException as e:
+        logger.error(f"Error making GET request to {url}: {e}")
         return None
 
 def analyze_review_sentiments(text):

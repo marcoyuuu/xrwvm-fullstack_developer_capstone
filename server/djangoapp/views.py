@@ -78,9 +78,14 @@ def get_cars(request):
 # Dealer Views
 def get_dealerships(request, state="All"):
     logger.info(f"Fetching dealerships for state: {state}")
+
+    # Use the correct backend API URL
+    backend_base_url = "https://marcoyu-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
     endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
+    full_url = f"{backend_base_url}{endpoint}"
+
     try:
-        dealerships = get_request(endpoint)
+        dealerships = get_request(full_url)
         logger.debug(f"Response from get_request: {dealerships}")
         if dealerships:
             return json_response({"status": 200, "dealers": dealerships})
@@ -91,26 +96,42 @@ def get_dealerships(request, state="All"):
         logger.error(f"Error fetching dealerships: {e}")
         return json_response({"status": 500, "message": "Internal Server Error"})
 
+
 def get_dealer_details(request, dealer_id):
-    if dealer_id:
-        endpoint = f"/fetchDealer/{dealer_id}"
-        dealership = get_request(endpoint)
+    logger.info(f"Fetching dealer details for ID: {dealer_id}")
+
+    # Use the correct backend API URL
+    backend_base_url = "https://marcoyu-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
+    full_url = f"{backend_base_url}/fetchDealer/{dealer_id}"
+
+    try:
+        dealership = get_request(full_url)
         if dealership:
             return json_response({"status": 200, "dealer": dealership})
         return json_response({"status": 404, "message": "Dealer not found"})
-    return json_response({"status": 400, "message": "Bad Request"})
+    except Exception as e:
+        logger.error(f"Error fetching dealer details: {e}")
+        return json_response({"status": 500, "message": "Internal Server Error"})
+
 
 def get_dealer_reviews(request, dealer_id):
-    if dealer_id:
-        endpoint = f"/fetchReviews/dealer/{dealer_id}"
-        reviews = get_request(endpoint)
+    logger.info(f"Fetching reviews for dealer ID: {dealer_id}")
+
+    # Use the correct backend API URL
+    backend_base_url = "https://marcoyu-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
+    full_url = f"{backend_base_url}/fetchReviews/dealer/{dealer_id}"
+
+    try:
+        reviews = get_request(full_url)
         if reviews:
             for review_detail in reviews:
                 sentiment = analyze_review_sentiments(review_detail.get('review', ''))
                 review_detail['sentiment'] = sentiment.get('sentiment', 'neutral')
             return json_response({"status": 200, "reviews": reviews})
         return json_response({"status": 404, "message": "No reviews found"})
-    return json_response({"status": 400, "message": "Bad Request"})
+    except Exception as e:
+        logger.error(f"Error fetching reviews: {e}")
+        return json_response({"status": 500, "message": "Internal Server Error"})
 
 def fetch_dealers(request):
     """
