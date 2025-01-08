@@ -1,4 +1,6 @@
+// src/components/Register/Register.jsx
 import React, { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import "./Register.css";
 import userIcon from "../assets/person.png";
 import emailIcon from "../assets/email.png";
@@ -12,11 +14,14 @@ const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const registerUrl = `${window.location.origin}/djangoapp/register/`;
 
+  // Helper to get the CSRF token from cookies
   const getCsrfToken = () => {
-    return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
+    const token = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return token ? token.split('=')[1] : '';
   };
 
   const register = async (e) => {
@@ -43,13 +48,14 @@ const Register = () => {
 
       if (data.status === "Authenticated") {
         sessionStorage.setItem("username", data.userName);
-        window.location.href = window.location.origin;
+        navigate("/"); // Navigate to home
       } else if (data.error === "Already Registered") {
         setError("The username is already registered.");
       } else {
         setError("Registration failed. Please try again.");
       }
     } catch (error) {
+      console.error("Registration error:", error);
       setError("An unexpected error occurred. Please try again later.");
     }
   };
@@ -58,32 +64,69 @@ const Register = () => {
     <div className="register-container">
       <div className="register-header">
         <h2 className="register-title">Sign Up</h2>
-        <button className="close-btn" onClick={() => (window.location.href = window.location.origin)}>
+        <button className="close-btn" onClick={() => navigate("/")}>
           <img src={closeIcon} alt="Close" />
         </button>
       </div>
       <hr />
       <form onSubmit={register} className="register-form">
         <div className="inputs">
-          <InputField icon={userIcon} placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} />
-          <InputField icon={userIcon} placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-          <InputField icon={userIcon} placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-          <InputField icon={emailIcon} placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <InputField icon={passwordIcon} placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <InputField
+            icon={userIcon}
+            placeholder="Username"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+          />
+          <InputField
+            icon={userIcon}
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <InputField
+            icon={userIcon}
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <InputField
+            icon={emailIcon}
+            placeholder="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <InputField
+            icon={passwordIcon}
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
         {error && <div className="error-message">{error}</div>}
         <div className="submit-panel">
           <button type="submit" className="submit-btn">Register</button>
         </div>
       </form>
+      <div className="register-link">
+        <Link to="/login">Already have an account? Login here</Link>
+      </div>
     </div>
   );
 };
 
 const InputField = ({ icon, placeholder, type = "text", value, onChange }) => (
   <div className="input-field">
-    <img src={icon} className="input-icon" alt={placeholder} />
-    <input type={type} placeholder={placeholder} className="input-element" value={value} onChange={onChange} required />
+    <img src={icon} className="input-icon" alt={`${placeholder} icon`} />
+    <input
+      type={type}
+      placeholder={placeholder}
+      className="input-element"
+      value={value}
+      onChange={onChange}
+      required
+    />
   </div>
 );
 

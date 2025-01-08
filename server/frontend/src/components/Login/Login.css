@@ -1,105 +1,109 @@
-/* General Modal Styling */
+/* src/components/Login/Login.css */
+
+/* Modal Overlay Styling */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-container {
-  background-color: #ffffff;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 30px;
-  position: relative;
-}
-
-/* Login Panel Styling */
-.login-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.login-title {
-  font-size: 1.5em;
-  color: #333333;
-  margin-bottom: 20px;
-}
-
-/* Form Group Styling */
-.form-group {
-  width: 100%;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.input-label {
-  font-size: 0.9em;
-  color: #555555;
-  margin-bottom: 8px;
-}
-
-.input-field {
-  height: 40px;
-  padding: 8px;
-  font-size: 1em;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  width: 100%;
-  transition: border-color 0.3s ease;
-}
-
-.input-field:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* Button Group Styling */
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 15px;
-}
-
-.action-button {
-  width: 48%;
-  height: 40px;
-  font-size: 1em;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.action-button:hover {
-  background-color: #0056b3;
-}
-
-/* Register Link Styling */
-.register-link {
-  margin-top: 15px;
-}
-
-.register-link a {
-  color: #007bff;
-  text-decoration: none;
-  font-size: 0.9em;
-}
-
-.register-link a:hover {
-  text-decoration: underline;
-}
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Modal Container Styling */
+  .modal-container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    position: relative;
+  }
+  
+  /* Login Panel Styling */
+  .login-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .login-title {
+    font-size: 1.5em;
+    color: #333333;
+    margin-bottom: 20px;
+  }
+  
+  /* Form Group Styling */
+  .form-group {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-label {
+    font-size: 0.9em;
+    color: #555555;
+    margin-bottom: 8px;
+  }
+  
+  .input-field {
+    height: 40px;
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    width: 100%;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-field:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  /* Button Group Styling */
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 15px;
+  }
+  
+  .action-button {
+    width: 48%;
+    height: 40px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Register Link Styling */
+  .register-link {
+    margin-top: 15px;
+  }
+  
+  .register-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+  
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+  

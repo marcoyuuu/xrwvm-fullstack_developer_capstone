@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.392360cf.css",
+    "main.js": "/static/js/main.6f0636a5.js",
+    "static/media/dealership.jpg": "/static/media/dealership.e5cb71275e835e33e16e.jpg",
+    "static/media/person3.jpg": "/static/media/person3.7d549996cbc662fc3f48.jpg",
+    "static/media/person1.jpg": "/static/media/person1.97ce8c0b045ea8c6aa22.jpg",
+    "static/media/person2.jpg": "/static/media/person2.d0baf1291ecb71373331.jpg",
+    "static/media/car_dealership.jpg": "/static/media/car_dealership.66fe1d05a0cdea878257.jpg",
+    "static/media/password.png": "/static/media/password.adcd6e686448d893855c.png",
+    "static/media/email.png": "/static/media/email.66cf52f2342f17f1f491.png",
+    "static/media/person.png": "/static/media/person.7419e33fa2e0a06c620d.png",
+    "static/media/reviewbutton.png": "/static/media/reviewbutton.d450bab8bc6468d9fb28.png",
+    "static/media/negative.png": "/static/media/negative.e7f6df651a8b8e85f293.png",
+    "static/media/positive.png": "/static/media/positive.4aa3d05c6e13ba380a17.png",
+    "static/media/neutral.png": "/static/media/neutral.84adb1c83d738945f381.png",
+    "static/media/reviewicon.png": "/static/media/reviewicon.7d906bac2946fa1dc23d.png",
+    "index.html": "/index.html",
+    "main.392360cf.css.map": "/static/css/main.392360cf.css.map",
+    "main.6f0636a5.js.map": "/static/js/main.6f0636a5.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.392360cf.css",
+    "static/js/main.6f0636a5.js"
+  ]
+}

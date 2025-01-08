@@ -1,0 +1,29 @@
+/* src/components/Home/Home.css */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.card {
+  width: 50%;
+  margin-top: 50px;
+  align-self: center;
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.banner h5 {
+  margin-bottom: 20px;
+}
+
+.banner .btn {
+  background-color: aqua;
+  margin: 10px;
+}

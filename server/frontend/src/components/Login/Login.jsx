@@ -1,17 +1,19 @@
+// src/components/Login/Login.jsx
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import "./Login.css";
-import Header from '../Header/Header';
 
-const Login = ({ onClose }) => {
+const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [open, setOpen] = useState(true);
+  const navigate = useNavigate();
   const loginUrl = `${window.location.origin}/djangoapp/login/`;
 
   // Helper to get the CSRF token from cookies
   const getCsrfToken = () => {
-    return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
+    const token = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return token ? token.split('=')[1] : '';
   };
 
   const handleLogin = async (e) => {
@@ -31,7 +33,7 @@ const Login = ({ onClose }) => {
       const data = await response.json();
       if (data.status === "Authenticated") {
         sessionStorage.setItem("username", data.userName);
-        setOpen(false);
+        navigate("/"); // Navigate to home
       } else {
         setError("Authentication failed. Please check your credentials.");
       }
@@ -41,52 +43,46 @@ const Login = ({ onClose }) => {
     }
   };
 
-  if (!open) {
-    window.location.href = "/";
-    return null;
-  }
-
   return (
-    <div>
-      <Header />
-      <div onClick={onClose} className="modal-overlay">
-        <div onClick={(e) => e.stopPropagation()} className="modal-container">
-          <form className="login-panel" onSubmit={handleLogin}>
-            <h2 className="login-title">Login</h2>
-            <div className="form-group">
-              <label className="input-label">Username</label>
-              <input
-                type="text"
-                name="username"
-                placeholder="Enter your username"
-                className="input-field"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="input-label">Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                className="input-field"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            {error && <div className="error-message">{error}</div>}
-            <div className="button-group">
-              <button type="submit" className="action-button">Login</button>
-              <button type="button" className="action-button" onClick={() => setOpen(false)}>Cancel</button>
-            </div>
-            <div className="register-link">
-              <a href="/register">Don't have an account? Register here</a>
-            </div>
-          </form>
-        </div>
+    <div className="modal-overlay">
+      <div className="modal-container">
+        <form className="login-panel" onSubmit={handleLogin}>
+          <h2 className="login-title">Login</h2>
+          <div className="form-group">
+            <label className="input-label" htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
+              className="input-field"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label className="input-label" htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              className="input-field"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <div className="error-message">{error}</div>}
+          <div className="button-group">
+            <button type="submit" className="action-button">Login</button>
+            <button type="button" className="action-button" onClick={() => navigate("/")}>Cancel</button>
+          </div>
+          <div className="register-link">
+            <Link to="/register">Don't have an account? Register here</Link>
+          </div>
+        </form>
       </div>
     </div>
   );
