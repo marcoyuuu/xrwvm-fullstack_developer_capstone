@@ -3,4 +3,4 @@ Django
 Pillow
 gunicorn
 python-dotenv
-WhiteNoise
+whiteNoise
