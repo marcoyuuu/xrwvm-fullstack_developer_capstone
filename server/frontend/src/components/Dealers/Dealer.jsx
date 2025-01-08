@@ -18,8 +18,8 @@ const Dealer = () => {
   const { id } = useParams();
 
   const root_url = window.location.origin;
-  const dealer_url = `${root_url}/djangoapp/dealer/${id}`;
-  const reviews_url = `${root_url}/djangoapp/reviews/dealer/${id}`;
+  const dealer_url = `/djangoapp/dealer/${id}`;
+  const reviews_url = `/djangoapp/reviews/dealer/${id}`;
   const post_review_url = `/postreview/${id}`; // Relative path for React Router
 
   // Memoized function to fetch dealer information
