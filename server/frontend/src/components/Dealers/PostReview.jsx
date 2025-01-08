@@ -18,9 +18,9 @@ const PostReview = () => {
   const navigate = useNavigate();
 
   const root_url = window.location.origin;
-  const dealer_url = `${root_url}/djangoapp/dealer/${id}`;
-  const review_url = `${root_url}/djangoapp/add_review`;
-  const carmodels_url = `${root_url}/djangoapp/get_cars`;
+  const dealer_url = `/djangoapp/dealer/${id}`;
+  const review_url = `/djangoapp/add_review`;
+  const carmodels_url = `/djangoapp/get_cars`;
 
   // Helper to get the CSRF token from cookies
   const getCsrfToken = useCallback(() => {
