@@ -2,11 +2,8 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
-from django.conf.urls.static import static
-from django.conf import settings
 from django.http import JsonResponse
 import requests
-import os
 
 # Function to proxy requests to backend APIs running on a different port
 def proxy_to_backend(request, path):
