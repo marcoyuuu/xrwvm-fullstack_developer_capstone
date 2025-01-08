@@ -41,10 +41,10 @@ INSTALLED_APPS = [
 # Middleware configurations
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise middleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # Ensure CSRF protection
+    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF protection
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -58,7 +58,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'frontend', 'build'),
+            os.path.join(BASE_DIR, 'frontend', 'build'),  # Points to React's build directory
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -106,11 +106,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Media root configuration
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend', 'build', 'static'),
-    os.path.join(BASE_DIR, 'frontend', 'build'),  # Add this line
+    os.path.join(BASE_DIR, 'frontend', 'build', 'static'),  # React's static files
+    os.path.join(BASE_DIR, 'frontend', 'build'),            # Root-level static files (manifest.json, favicon.ico, etc.)
 ]
 
-# WhiteNoise configuration
+# WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
