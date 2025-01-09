@@ -11,8 +11,8 @@ const Dealers = () => {
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("All");
 
-  const dealer_url = "/djangoapp/fetchDealers/";
-  const dealer_url_by_state = "/djangoapp/fetchDealers/";
+  const dealer_url = "/djangoapp/dealers/";
+  const dealer_url_by_state = "/djangoapp/dealers/";
 
   const filterDealers = useCallback(async (state) => {
     const url = state === "All" ? dealer_url : `${dealer_url_by_state}${state}`;

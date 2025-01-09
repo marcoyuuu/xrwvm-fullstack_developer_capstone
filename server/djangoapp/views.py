@@ -77,72 +77,56 @@ def get_cars(request):
     return json_response({"CarModels": cars})
 
 # Dealer Views
-def get_dealerships(request, state="All"):
+def fetch_dealers(request, state="All"):
     logger.info(f"Fetching dealerships for state: {state}")
 
-    # Use the correct backend API URL
-    backend_base_url = "https://marcoyu-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
-    endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
-    full_url = f"{backend_base_url}{endpoint}"
+    # Determine the correct endpoint based on the state
+    if state and state != "All":
+        endpoint = f"/fetchDealers/{state}/"
+    else:
+        endpoint = "/fetchDealers/"
+    
+    full_url = f"{backend_url}{endpoint}"
+    logger.debug(f"Fetching dealers from URL: {full_url}")
 
-    try:
-        dealerships = get_request(full_url)
-        logger.debug(f"Response from get_request: {dealerships}")
-        if dealerships:
-            return json_response({"status": 200, "dealers": dealerships})
-        else:
-            logger.error("No dealerships found in response.")
-            return json_response({"status": 500, "message": "Failed to retrieve dealerships"})
-    except Exception as e:
-        logger.error(f"Error fetching dealerships: {e}")
-        return json_response({"status": 500, "message": "Internal Server Error"})
+    dealers = get_request(full_url)
 
+    if dealers is not None:
+        return JsonResponse({"status": 200, "dealers": dealers})
+    else:
+        logger.error("Failed to fetch dealers from backend API.")
+        return JsonResponse({"status": 500, "error": "Failed to fetch dealers"}, status=500)
 
 def get_dealer_details(request, dealer_id):
     logger.info(f"Fetching dealer details for ID: {dealer_id}")
 
-    # Use the correct backend API URL
-    backend_base_url = "https://marcoyu-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
-    full_url = f"{backend_base_url}/fetchDealer/{dealer_id}"
+    full_url = f"{backend_url}/fetchDealer/{dealer_id}/"
+    logger.debug(f"Fetching dealer details from URL: {full_url}")
 
-    try:
-        dealership = get_request(full_url)
-        if dealership:
-            return json_response({"status": 200, "dealer": dealership})
-        return json_response({"status": 404, "message": "Dealer not found"})
-    except Exception as e:
-        logger.error(f"Error fetching dealer details: {e}")
-        return json_response({"status": 500, "message": "Internal Server Error"})
+    dealer = get_request(full_url)
 
+    if dealer is not None:
+        return JsonResponse({"status": 200, "dealer": dealer})
+    else:
+        logger.error(f"Dealer with ID {dealer_id} not found.")
+        return JsonResponse({"status": 404, "error": "Dealer not found"}, status=404)
 
 def get_dealer_reviews(request, dealer_id):
     logger.info(f"Fetching reviews for dealer ID: {dealer_id}")
 
-    # Use the correct backend API URL
-    backend_base_url = "https://marcoyu-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
-    full_url = f"{backend_base_url}/fetchReviews/dealer/{dealer_id}"
+    full_url = f"{backend_url}/fetchReviews/dealer/{dealer_id}/"
+    logger.debug(f"Fetching reviews from URL: {full_url}")
 
-    try:
-        reviews = get_request(full_url)
-        if reviews:
-            for review_detail in reviews:
-                sentiment = analyze_review_sentiments(review_detail.get('review', ''))
-                review_detail['sentiment'] = sentiment.get('sentiment', 'neutral')
-            return json_response({"status": 200, "reviews": reviews})
-        return json_response({"status": 404, "message": "No reviews found"})
-    except Exception as e:
-        logger.error(f"Error fetching reviews: {e}")
-        return json_response({"status": 500, "message": "Internal Server Error"})
+    reviews = get_request(full_url)
 
-def fetch_dealers(request):
-    """
-    Returns a list of dealers. Replace with actual database or API logic.
-    """
-    dealers = [
-        {"id": 1, "name": "Dealer 1", "city": "City 1", "state": "State 1", "address": "123 Main St", "zip": "12345"},
-        {"id": 2, "name": "Dealer 2", "city": "City 2", "state": "State 2", "address": "456 Elm St", "zip": "67890"}
-    ]
-    return JsonResponse(dealers, safe=False)
+    if reviews is not None:
+        for review_detail in reviews:
+            sentiment = analyze_review_sentiments(review_detail.get('review', ''))
+            review_detail['sentiment'] = sentiment.get('sentiment', 'neutral') if sentiment else 'neutral'
+        return JsonResponse({"status": 200, "reviews": reviews})
+    else:
+        logger.error(f"No reviews found for dealer ID {dealer_id}.")
+        return JsonResponse({"status": 404, "error": "No reviews found"}, status=404)
 
 # View to handle review submission
 @csrf_exempt
