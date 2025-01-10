@@ -20,6 +20,9 @@ urlpatterns = [
     path('dealer/<int:dealer_id>/add-review/', TemplateView.as_view(template_name="index.html"), name='add_review_page'),
     path('postreview/<int:id>/', TemplateView.as_view(template_name="index.html"), name='post_review_page'),
 
+    # New Route for Fetching Reviews by Dealer ID
+    path('reviews/dealer/<int:dealer_id>/', views.get_dealer_reviews, name='dealer_reviews_page'),
+
     # Serve manifest.json and static assets
     path('manifest.json', TemplateView.as_view(template_name="manifest.json"), name='manifest_json'),
     path('favicon.ico', TemplateView.as_view(template_name="favicon.ico"), name='favicon'),

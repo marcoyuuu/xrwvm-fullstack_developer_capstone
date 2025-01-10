@@ -7,7 +7,6 @@ const app = express();
 const port = 3030;
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Import Models
