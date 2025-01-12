@@ -9,13 +9,15 @@ import json
 from django.db.utils import OperationalError
 from .populate import initiate
 from .models import CarMake, CarModel
-from .restapis import backend_url, get_request, post_review, analyze_review_sentiments
+from .restapis import (
+    backend_url,
+    get_request,
+    post_review,
+    analyze_review_sentiments
+)
 
-# Initialize logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)  # Ensure logger captures debug-level logs
-
-# Configure a stream handler if none exists
+logger.setLevel(logging.DEBUG)
 if not logger.handlers:
     handler = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -81,8 +83,13 @@ def registration(request):
     last_name = data.get('lastName')
     email = data.get('email')
     if User.objects.filter(username=username).exists():
-        logger.warning(f"Registration attempt with existing username '{username}'.")
-        return json_response({"userName": username, "error": "Already Registered"}, status=400)
+        logger.warning(
+            f"Registration attempt with existing username '{username}'."
+        )
+        return json_response(
+            {"userName": username, "error": "Already Registered"},
+            status=400
+        )
     try:
         user = User.objects.create_user(
             username=username,
@@ -92,10 +99,12 @@ def registration(request):
             email=email
         )
         login(request, user)
-        logger.info(f"User '{username}' registered and authenticated successfully.")
+        logger.info(
+            f"User '{username}' registered and authenticated successfully."
+        )
         return json_response({"userName": username, "status": "Authenticated"})
-    except Exception as exc:
-        logger.error(f"Error in registration for user '{username}': {exc}")
+    except Exception:
+        logger.error(f"Error in registration for user '{username}'.")
         return json_response({"error": "Registration failed"}, status=500)
 
 
@@ -103,21 +112,25 @@ def registration(request):
 
 def get_cars(request):
     try:
-        # Check if the CarMake table exists by attempting to count its records.
         if CarMake.objects.count() == 0:
-            logger.info("No CarMake records found. Running initiate() to populate data...")
+            logger.info(
+                "No CarMake records found. Running initiate() to populate data..."
+            )
             initiate()
             logger.info("Data population completed.")
-
-        # Retrieve all car models along with their related CarMake using select_related
         car_models = CarModel.objects.select_related('car_make').all()
-        # Build a list of dictionaries with the required keys.
-        cars = [{"CarModel": cm.name, "CarMake": cm.car_make.name} for cm in car_models]
+        cars = [{"CarModel": cm.name, "CarMake": cm.car_make.name} 
+                for cm in car_models]
         logger.info(f"Retrieved {len(cars)} car models successfully.")
         return json_response({"CarModels": cars})
     except OperationalError as exc:
-        logger.error("Database table not found. Have you run migrations?", exc_info=True)
-        return json_response({"error": "Failed to retrieve car models. Have you run migrations?"}, status=500)
+        logger.error(
+            "Database table not found. Have you run migrations?", exc_info=True
+        )
+        return json_response(
+            {"error": "Failed to retrieve car models. Have you run migrations?"},
+            status=500
+        )
     except Exception as exc:
         logger.error(f"Exception in get_cars: {exc}", exc_info=True)
         return json_response({"error": "Failed to retrieve car models"}, status=500)
@@ -139,10 +152,13 @@ def fetch_dealers(request, state="All"):
             logger.debug(f"Retrieved {len(dealers)} dealers.")
             return json_response({"status": 200, "dealers": dealers})
         logger.error("Failed to fetch dealers from backend API.")
-        return json_response({"status": 500, "error": "Failed to fetch dealers"}, status=500)
+        return json_response({"status": 500, "error": "Failed to fetch dealers"}, 
+                             status=500)
     except Exception as exc:
         logger.error(f"Exception in fetch_dealers: {exc}")
-        return json_response({"status": 500, "error": "Internal Server Error"}, status=500)
+        return json_response(
+            {"status": 500, "error": "Internal Server Error"}, status=500
+        )
 
 
 def get_dealer_details(request, dealer_id):
@@ -158,7 +174,9 @@ def get_dealer_details(request, dealer_id):
         return json_response({"status": 404, "error": "Dealer not found"}, status=404)
     except Exception as exc:
         logger.error(f"Exception in get_dealer_details: {exc}")
-        return json_response({"status": 500, "error": "Internal Server Error"}, status=500)
+        return json_response(
+            {"status": 500, "error": "Internal Server Error"}, status=500
+        )
 
 
 def get_dealer_reviews(request, dealer_id):
@@ -169,15 +187,21 @@ def get_dealer_reviews(request, dealer_id):
         reviews = get_request(full_url)
         if reviews is not None:
             for review_detail in reviews:
-                sentiment = analyze_review_sentiments(review_detail.get('review', ''))
-                review_detail['sentiment'] = sentiment.get('sentiment', 'neutral') if sentiment else 'neutral'
+                sentiment = analyze_review_sentiments(
+                    review_detail.get('review', '')
+                )
+                review_detail['sentiment'] = (
+                    sentiment.get('sentiment', 'neutral') if sentiment else 'neutral'
+                )
             logger.debug(f"Retrieved {len(reviews)} reviews for dealer ID: {dealer_id}")
             return json_response({"status": 200, "reviews": reviews})
         logger.warning(f"No reviews found for dealer ID {dealer_id}.")
         return json_response({"status": 404, "error": "No reviews found"}, status=404)
     except Exception as exc:
         logger.error(f"Exception in get_dealer_reviews: {exc}")
-        return json_response({"status": 500, "error": "Internal Server Error"}, status=500)
+        return json_response(
+            {"status": 500, "error": "Internal Server Error"}, status=500
+        )
 
 
 # ===== Review Submission View =====
@@ -186,23 +210,37 @@ def get_dealer_reviews(request, dealer_id):
 def add_review(request):
     if request.method != "POST":
         logger.warning("add_review called with invalid request method.")
-        return json_response({"status": 405, "message": "Method Not Allowed"}, status=405)
+        return json_response(
+            {"status": 405, "message": "Method Not Allowed"}, status=405
+        )
     if not request.user.is_authenticated:
         logger.warning("Unauthorized add_review attempt.")
-        return json_response({"status": 403, "message": "Unauthorized"}, status=403)
+        return json_response(
+            {"status": 403, "message": "Unauthorized"}, status=403
+        )
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
         logger.error("JSON decode error in add_review")
-        return json_response({"status": 400, "message": "Invalid JSON format"}, status=400)
+        return json_response(
+            {"status": 400, "message": "Invalid JSON format"}, status=400
+        )
     try:
         response = post_review(data)
         if response and "id" in response:
-            logger.info(f"Review posted successfully by user '{request.user.username}'.")
-            return json_response({"status": 200, "message": "Review posted successfully"})
-        else:
-            logger.error("Failed to post review via backend API. Response: " + str(response))
-            return json_response({"status": 500, "message": "Error in posting review"}, status=500)
-    except Exception as exc:
-        logger.error(f"Exception in add_review: {exc}")
-        return json_response({"status": 500, "message": "Internal Server Error"}, status=500)
+            logger.info(
+                f"Review posted successfully by user '{request.user.username}'."
+            )
+            return json_response(
+                {"status": 200, "message": "Review posted successfully"}
+            )
+        logger.error("Failed to post review via backend API. Response: " +
+                     str(response))
+        return json_response(
+            {"status": 500, "message": "Error in posting review"}, status=500
+        )
+    except Exception:
+        logger.error("Exception in add_review")
+        return json_response(
+            {"status": 500, "message": "Internal Server Error"}, status=500
+        )
