@@ -16,7 +16,7 @@ const Register = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const registerUrl = `${window.location.origin}/djangoapp/register/`;
+  const registerUrl = `${window.location.origin}/djangoapp/api/register/`; // Updated API URL
 
   // Helper to get the CSRF token from cookies
   const getCsrfToken = () => {
@@ -44,6 +44,12 @@ const Register = () => {
         }),
       });
 
+      if (!response.ok) {
+        // Handle HTTP errors
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+
       const data = await response.json();
 
       if (data.status === "Authenticated") {
@@ -56,7 +62,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      setError("An unexpected error occurred. Please try again later.");
+      setError(error.message || "An unexpected error occurred. Please try again later.");
     }
   };
 

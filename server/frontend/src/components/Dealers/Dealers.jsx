@@ -11,42 +11,55 @@ const Dealers = () => {
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("All");
 
-  const dealer_url = "/djangoapp/dealers/";
-  const dealer_url_by_state = "/djangoapp/dealers/";
+  // Base URLs for dealers endpoints (API)
+  const baseDealersUrl = "/djangoapp/api/dealers/";
 
-  const filterDealers = useCallback(async (state) => {
-    const url = state === "All" ? dealer_url : `${dealer_url_by_state}${state}`;
-    try {
-      const res = await fetch(url, {
-        method: "GET"
-      });
-      const retobj = await res.json();
-      if (retobj.status === 200) {
-        let state_dealers = Array.from(retobj.dealers);
-        setDealersList(state_dealers);
-      }
-    } catch (error) {
-      console.error("Error fetching dealers by state:", error);
-    }
-  }, [dealer_url, dealer_url_by_state]);
-
+  // Fetch all dealers (used on component mount)
   const get_dealers = useCallback(async () => {
     try {
-      const res = await fetch(dealer_url, {
-        method: "GET"
-      });
+      const res = await fetch(baseDealersUrl, { method: "GET" });
       const retobj = await res.json();
-      if (retobj.status === 200) {
-        let all_dealers = Array.from(retobj.dealers);
-        let statesArr = all_dealers.map(dealer => dealer.state);
-        setStates([...new Set(statesArr)]);
-        setDealersList(all_dealers);
+      // Check whether the response is wrapped (has a status key)
+      let all_dealers = [];
+      if (retobj.status === 200 && retobj.dealers) {
+        all_dealers = Array.from(retobj.dealers);
+      } else if (Array.isArray(retobj)) {
+        all_dealers = retobj;
+      } else {
+        console.error("Unexpected API format:", retobj);
       }
+      // Build state list from all dealers
+      const statesArr = all_dealers.map(dealer => dealer.state);
+      setStates([...new Set(statesArr)]);
+      setDealersList(all_dealers);
     } catch (error) {
       console.error("Error fetching dealers:", error);
     }
-  }, [dealer_url]);
+  }, [baseDealersUrl]);
 
+  // Filter dealers by state
+  const filterDealers = useCallback(async (state) => {
+    // When filtering by state, ensure the trailing slash is present
+    const url = state === "All" ? baseDealersUrl : `${baseDealersUrl}${state}/`;
+    console.log("Filter URL:", url);
+    try {
+      const res = await fetch(url, { method: "GET" });
+      const retobj = await res.json();
+      let filteredDealers = [];
+      if (retobj.status === 200 && retobj.dealers) {
+        filteredDealers = Array.from(retobj.dealers);
+      } else if (Array.isArray(retobj)) {
+        filteredDealers = retobj;
+      } else {
+        console.error("Unexpected API format while filtering:", retobj);
+      }
+      setDealersList(filteredDealers);
+    } catch (error) {
+      console.error("Error fetching dealers by state:", error);
+    }
+  }, [baseDealersUrl]);
+
+  // On component mount, load all dealers
   useEffect(() => {
     get_dealers();
   }, [get_dealers]);
@@ -89,10 +102,14 @@ const Dealers = () => {
           </tr>
         </thead>
         <tbody>
-          {dealersList.map(dealer => (
+          {dealersList.map((dealer) => (
             <tr key={dealer.id}>
               <td>{dealer.id}</td>
-              <td><Link to={`/dealer/${dealer.id}`}>{dealer.full_name}</Link></td>
+              <td>
+                <Link to={`/dealer/${dealer.id}`}>
+                  {dealer.full_name}
+                </Link>
+              </td>
               <td>{dealer.city}</td>
               <td>{dealer.address}</td>
               <td>{dealer.zip}</td>

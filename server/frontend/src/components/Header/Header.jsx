@@ -7,13 +7,30 @@ import "../assets/bootstrap.min.css";
 const Header = () => {
   const navigate = useNavigate();
 
+  // Helper to get the CSRF token from cookies (optional if using CSRF protection)
+  const getCsrfToken = () => {
+    const token = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return token ? token.split('=')[1] : '';
+  };
+
   const logout = async (e) => {
     e.preventDefault();
-    const logout_url = `${window.location.origin}/djangoapp/logout/`;
+    const logout_url = `${window.location.origin}/djangoapp/api/logout/`; // Updated API URL
     try {
       const res = await fetch(logout_url, {
-        method: "GET",
+        method: "POST", // Changed to POST
+        headers: {
+          "Content-Type": "application/json",
+          // "X-CSRFToken": getCsrfToken(), // Uncomment if handling CSRF
+        },
+        credentials: "include", // Include credentials if using sessions
+        body: JSON.stringify({}), // Send an empty JSON object or necessary data
       });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`HTTP error! status: ${res.status}, message: ${errorText}`);
+      }
 
       const json = await res.json();
       if (json) {

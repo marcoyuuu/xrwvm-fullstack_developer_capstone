@@ -8,7 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const loginUrl = `${window.location.origin}/djangoapp/login/`;
+  const loginUrl = `${window.location.origin}/djangoapp/api/login/`; // Updated API URL
 
   // Helper to get the CSRF token from cookies
   const getCsrfToken = () => {
@@ -30,6 +30,12 @@ const Login = () => {
         body: JSON.stringify({ userName, password }),
       });
 
+      if (!response.ok) {
+        // Handle HTTP errors
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+
       const data = await response.json();
       if (data.status === "Authenticated") {
         sessionStorage.setItem("username", data.userName);
@@ -39,7 +45,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError("An error occurred. Please try again.");
+      setError(error.message || "An error occurred. Please try again.");
     }
   };
 

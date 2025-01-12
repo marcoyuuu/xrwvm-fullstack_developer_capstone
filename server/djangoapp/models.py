@@ -1,9 +1,9 @@
 # djangoapp/models.py
+
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-# Define the current year dynamically
 CURRENT_YEAR = timezone.now().year
 
 class CarMake(models.Model):
@@ -22,7 +22,6 @@ class CarMake(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.description[:30]}"  # Display name and partial description for readability
-
 
 class CarModel(models.Model):
     """
@@ -69,4 +68,3 @@ class CarModel(models.Model):
 
     def __str__(self):
         return f"{self.car_make.name} {self.name} ({self.year})"  # Display car make, model name, and year for clarity
-
