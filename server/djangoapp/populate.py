@@ -1,6 +1,5 @@
-# djangoapp/populate.py
-
 from .models import CarMake, CarModel
+
 
 def initiate():
     """
@@ -8,16 +7,11 @@ def initiate():
     Checks if data already exists to avoid duplicate entries.
     """
     car_make_data = [
-        {"name": "NISSAN",
-         "description": "Innovative Japanese engineering"},
-        {"name": "Mercedes",
-         "description": "Premium German craftsmanship"},
-        {"name": "Audi",
-         "description": "Precision German technology"},
-        {"name": "Kia",
-         "description": "Advanced Korean engineering"},
-        {"name": "Toyota",
-         "description": "Reliability of Japanese manufacturing"},
+        {"name": "NISSAN", "description": "Innovative Japanese engineering"},
+        {"name": "Mercedes", "description": "Premium German craftsmanship"},
+        {"name": "Audi", "description": "Precision German technology"},
+        {"name": "Kia", "description": "Advanced Korean engineering"},
+        {"name": "Toyota", "description": "Reliability of Japanese manufacturing"},
     ]
     car_make_instances = []
     for data in car_make_data:

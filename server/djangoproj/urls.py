@@ -2,8 +2,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
-from django.conf.urls import handler404, handler500
-from djangoapp import views as app_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
