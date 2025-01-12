@@ -1,4 +1,3 @@
 [flake8]
 exclude = djangoapp/migrations/,server/djangoapp/migrations/
 max-line-length = 100
-ignore = E501, F401
