@@ -1,4 +1,4 @@
-// database/app.js
+/* jshint esversion: 8 */
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
@@ -71,16 +71,18 @@ app.get('/fetchDealers', async (req, res) => {
   }
 });
 app.get('/fetchDealers/:state', async (req, res) => {
+  const state = req.params.state;
   try {
-    const docs = await Dealerships.find({ state: req.params.state });
+    const docs = await Dealerships.find({ state: state });
     res.json(docs);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching dealerships by state' });
   }
 });
 app.get('/fetchDealer/:id', async (req, res) => {
+  const id = req.params.id;
   try {
-    const dealer = await Dealerships.findOne({ id: req.params.id });
+    const dealer = await Dealerships.findOne({ id: id });
     if (dealer) {
       res.json(dealer);
     } else {

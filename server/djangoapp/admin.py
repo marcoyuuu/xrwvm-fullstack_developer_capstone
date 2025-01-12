@@ -22,8 +22,10 @@ class CarModelAdmin(admin.ModelAdmin):
     Provides search functionality, list filters, and field display settings.
     """
     list_display = ('name', 'car_make', 'type', 'year', 'dealer_id')
-    list_filter = ('type', 'year', 'car_make')  # Filter by type, year, and car make
-    search_fields = ('name', 'car_make__name', 'dealer_id')  # Search by model name, car make name, and dealer ID
+    # Filter by type, year, and car make
+    list_filter = ('type', 'year', 'car_make')
+    # Search by model name, car make name, and dealer ID
+    search_fields = ('name', 'car_make__name', 'dealer_id')
     ordering = ['car_make', '-year']  # Default ordering by car make and year
     list_per_page = 20  # Display 20 items per page for easy browsing
 

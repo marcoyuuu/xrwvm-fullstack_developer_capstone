@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 CURRENT_YEAR = timezone.now().year
 
+
 class CarMake(models.Model):
     """
     Model representing the car make information.
@@ -15,13 +16,23 @@ class CarMake(models.Model):
         created_at (datetime): Date when the car make was created.
         updated_at (datetime): Date when the car make was last updated.
     """
-    name = models.CharField(max_length=100, unique=True, help_text="Unique name of the car make.")
-    description = models.TextField(blank=True, help_text="Optional description of the car make.")
-    created_at = models.DateTimeField(default=timezone.now, help_text="Date when the car make was created.")
-    updated_at = models.DateTimeField(auto_now=True, help_text="Date when the car make was last updated.")
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Unique name of the car make.")
+    description = models.TextField(
+        blank=True, help_text="Optional description of the car make.")
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="Date when the car make was created.")
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text="Date when the car make was last updated.")
 
     def __str__(self):
-        return f"{self.name} - {self.description[:30]}"  # Display name and partial description for readability
+        # Display name and partial description for readability
+        return f"{self.name} - {self.description[:30]}"
+
 
 class CarModel(models.Model):
     """
@@ -43,17 +54,18 @@ class CarModel(models.Model):
     ]
 
     car_make = models.ForeignKey(
-        CarMake, 
-        related_name='models', 
-        on_delete=models.CASCADE, 
+        CarMake,
+        related_name='models',
+        on_delete=models.CASCADE,
         help_text="Car make associated with this model."
     )
-    dealer_id = models.PositiveIntegerField(help_text="Reference ID of the dealer.")
+    dealer_id = models.PositiveIntegerField(
+        help_text="Reference ID of the dealer.")
     name = models.CharField(max_length=100, help_text="Name of the car model.")
     type = models.CharField(
-        max_length=10, 
-        choices=CAR_TYPES, 
-        default='SUV', 
+        max_length=10,
+        choices=CAR_TYPES,
+        default='SUV',
         help_text="Type of the car model (e.g., Sedan, SUV, Wagon)."
     )
     year = models.PositiveIntegerField(
@@ -63,8 +75,13 @@ class CarModel(models.Model):
         ],
         help_text=f"Year the car model was manufactured (1980 - {CURRENT_YEAR})."
     )
-    created_at = models.DateTimeField(default=timezone.now, help_text="Date when the car model was created.")
-    updated_at = models.DateTimeField(auto_now=True, help_text="Date when the car model was last updated.")
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="Date when the car model was created.")
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text="Date when the car model was last updated.")
 
     def __str__(self):
-        return f"{self.car_make.name} {self.name} ({self.year})"  # Display car make, model name, and year for clarity
+        # Display car make, model name, and year for clarity
+        return f"{self.car_make.name} {self.name} ({self.year})"
