@@ -11,7 +11,3 @@ urlpatterns = [
     # Catch‐all for React app (ensure API endpoints are already matched above)
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html'), name='react-app'),
 ]
-
-handler404 = app_views.custom_404
-handler500 = app_views.custom_500
-
