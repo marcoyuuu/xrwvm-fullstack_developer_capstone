@@ -31,6 +31,7 @@ const Register = () => {
     try {
       const response = await fetch(registerUrl, {
         method: "POST",
+        credentials: "include", // Ensure cookies are sent/received
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": getCsrfToken()

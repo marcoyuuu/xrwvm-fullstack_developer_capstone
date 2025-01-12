@@ -23,6 +23,7 @@ const Login = () => {
     try {
       const response = await fetch(loginUrl, {
         method: "POST",
+        credentials: "include", // Ensure cookies (session) are sent and set
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": getCsrfToken()

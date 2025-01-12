@@ -22,6 +22,7 @@ const PostReview = () => {
   const reviewUrl = `/djangoapp/api/add_review/`;
   const carModelsUrl = `/djangoapp/api/get_cars/`;
 
+  // Helper: Retrieve CSRF token from cookies
   const getCsrfToken = useCallback(() => {
     const tokenString = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
     return tokenString ? tokenString.split('=')[1] : '';
@@ -29,7 +30,7 @@ const PostReview = () => {
 
   const getDealer = useCallback(async () => {
     try {
-      const res = await fetch(dealerUrl, { method: "GET" });
+      const res = await fetch(dealerUrl, { method: "GET", credentials: "include" }); // Added credentials
       const data = await res.json();
       if (data.status === 200 && data.dealer) {
         setDealer(data.dealer);
@@ -46,6 +47,7 @@ const PostReview = () => {
     try {
       const res = await fetch(carModelsUrl, { method: "GET" });
       const data = await res.json();
+      // Expecting data.CarModels to be an array; adjust key if needed.
       if (data && Array.isArray(data.CarModels)) {
         setCarModels(data.CarModels);
       } else {
@@ -85,6 +87,7 @@ const PostReview = () => {
           "Content-Type": "application/json",
           "X-CSRFToken": getCsrfToken()
         },
+        credentials: "include", // *** Added credentials so cookies (sessions) are sent ***
         body: JSON.stringify(payload),
       });
       const responseData = await res.json();

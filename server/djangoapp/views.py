@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
-
+from django.db.utils import OperationalError
 from .populate import initiate
 from .models import CarMake, CarModel
 from .restapis import backend_url, get_request, post_review, analyze_review_sentiments
@@ -94,19 +94,24 @@ def registration(request):
 
 # ===== Car Model and Make Views =====
 def get_cars(request):
-    logger.info("Received request to get car models.")
     try:
-        # Populate data if none exists
+        # Check if the CarMake table exists by attempting to count its records.
         if CarMake.objects.count() == 0:
-            logger.debug("No CarMake entries found. Initiating data population.")
+            logger.info("No CarMake records found. Running initiate() to populate data...")
             initiate()
-            logger.debug("Data population completed.")
-        car_models = CarModel.objects.select_related('car_make')
+            logger.info("Data population completed.")
+
+        # Retrieve all car models along with their related CarMake using select_related
+        car_models = CarModel.objects.select_related('car_make').all()
+        # Build a list of dictionaries with the required keys.
         cars = [{"CarModel": cm.name, "CarMake": cm.car_make.name} for cm in car_models]
-        logger.debug(f"Retrieved {len(cars)} car models.")
+        logger.info(f"Retrieved {len(cars)} car models successfully.")
         return json_response({"CarModels": cars})
+    except OperationalError as e:
+        logger.error("Database table not found. Have you run migrations?", exc_info=True)
+        return json_response({"error": "Failed to retrieve car models. Have you run migrations?"}, status=500)
     except Exception as e:
-        logger.error(f"Error in get_cars view: {e}")
+        logger.error(f"Exception in get_cars: {e}", exc_info=True)
         return json_response({"error": "Failed to retrieve car models"}, status=500)
 
 # ===== Dealer Views =====
@@ -178,11 +183,13 @@ def add_review(request):
         return json_response({"status": 400, "message": "Invalid JSON format"}, status=400)
     try:
         response = post_review(data)
-        if response and response.get("status") == "Success":
+        # Check if the returned JSON contains an 'id' (i.e. the review was saved)
+        if response and "id" in response:
             logger.info(f"Review posted successfully by user '{request.user.username}'.")
             return json_response({"status": 200, "message": "Review posted successfully"})
-        logger.error("Failed to post review via backend API.")
-        return json_response({"status": 500, "message": "Error in posting review"}, status=500)
+        else:
+            logger.error("Failed to post review via backend API. Response: " + str(response))
+            return json_response({"status": 500, "message": "Error in posting review"}, status=500)
     except Exception as e:
         logger.error(f"Exception in add_review: {e}")
         return json_response({"status": 500, "message": "Internal Server Error"}, status=500)
