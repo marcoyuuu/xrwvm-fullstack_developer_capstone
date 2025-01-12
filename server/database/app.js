@@ -15,6 +15,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Import Models
 const Reviews = require('./review');
 const Dealerships = require('./dealership');
 
@@ -33,10 +34,11 @@ mongoose.connect("mongodb://mongo_db:27017/", { dbName: 'dealershipsDB' })
 const initializeData = async () => {
   try {
     await Reviews.deleteMany({});
-    await Reviews.insertMany(reviews_data['reviews']);
+    await Reviews.insertMany(reviews_data.reviews);
     console.log("Reviews data initialized");
+
     await Dealerships.deleteMany({});
-    await Dealerships.insertMany(dealerships_data['dealerships']);
+    await Dealerships.insertMany(dealerships_data.dealerships);
     console.log("Dealerships data initialized");
   } catch (error) {
     console.error("Error initializing data:", error);
@@ -71,9 +73,8 @@ app.get('/fetchDealers', async (req, res) => {
   }
 });
 app.get('/fetchDealers/:state', async (req, res) => {
-  const state = req.params.state;
   try {
-    const docs = await Dealerships.find({ state: state });
+    const docs = await Dealerships.find({ state: req.params.state });
     res.json(docs);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching dealerships by state' });
@@ -99,14 +100,14 @@ app.post('/insert_review', async (req, res) => {
     let new_id = docs.length > 0 ? docs[0].id + 1 : 1;
     const review = new Reviews({
       id: new_id,
-      name: data['name'],
-      dealership: data['dealership'],
-      review: data['review'],
-      purchase: data['purchase'],
-      purchase_date: data['purchase_date'],
-      car_make: data['car_make'],
-      car_model: data['car_model'],
-      car_year: data['car_year'],
+      name: data.name,
+      dealership: data.dealership,
+      review: data.review,
+      purchase: data.purchase,
+      purchase_date: data.purchase_date,
+      car_make: data.car_make,
+      car_model: data.car_model,
+      car_year: data.car_year,
     });
     const savedReview = await review.save();
     res.json(savedReview);

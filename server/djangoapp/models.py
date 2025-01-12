@@ -19,15 +19,20 @@ class CarMake(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
-        help_text="Unique name of the car make.")
+        help_text="Unique name of the car make."
+    )
     description = models.TextField(
-        blank=True, help_text="Optional description of the car make.")
+        blank=True,
+        help_text="Optional description of the car make."
+    )
     created_at = models.DateTimeField(
         default=timezone.now,
-        help_text="Date when the car make was created.")
+        help_text="Date when the car make was created."
+    )
     updated_at = models.DateTimeField(
         auto_now=True,
-        help_text="Date when the car make was last updated.")
+        help_text="Date when the car make was last updated."
+    )
 
     def __str__(self):
         # Display name and partial description for readability
@@ -38,7 +43,7 @@ class CarModel(models.Model):
     """
     Model representing the car model details.
     Attributes:
-        car_make (ForeignKey): ForeignKey to the CarMake model (many-to-one relationship).
+        car_make (ForeignKey): ForeignKey to the CarMake model.
         dealer_id (int): ID that relates to the dealer in an external database.
         name (str): Name of the car model.
         type (str): Type of the car model (Sedan, SUV, etc.).
@@ -50,7 +55,6 @@ class CarModel(models.Model):
         ('SEDAN', 'Sedan'),
         ('SUV', 'SUV'),
         ('WAGON', 'Wagon'),
-        # Add other types if needed
     ]
 
     car_make = models.ForeignKey(
@@ -60,8 +64,12 @@ class CarModel(models.Model):
         help_text="Car make associated with this model."
     )
     dealer_id = models.PositiveIntegerField(
-        help_text="Reference ID of the dealer.")
-    name = models.CharField(max_length=100, help_text="Name of the car model.")
+        help_text="Reference ID of the dealer."
+    )
+    name = models.CharField(
+        max_length=100,
+        help_text="Name of the car model."
+    )
     type = models.CharField(
         max_length=10,
         choices=CAR_TYPES,
@@ -77,10 +85,12 @@ class CarModel(models.Model):
     )
     created_at = models.DateTimeField(
         default=timezone.now,
-        help_text="Date when the car model was created.")
+        help_text="Date when the car model was created."
+    )
     updated_at = models.DateTimeField(
         auto_now=True,
-        help_text="Date when the car model was last updated.")
+        help_text="Date when the car model was last updated."
+    )
 
     def __str__(self):
         # Display car make, model name, and year for clarity
