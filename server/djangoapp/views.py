@@ -122,7 +122,7 @@ def get_cars(request):
             initiate()
             logger.info("Data population completed.")
         car_models = CarModel.objects.select_related('car_make').all()
-        cars = [{"CarModel": cm.name, "CarMake": cm.car_make.name} 
+        cars = [{"CarModel": cm.name, "CarMake": cm.car_make.name}
                 for cm in car_models]
         logger.info(f"Retrieved {len(cars)} car models successfully.")
         return json_response({"CarModels": cars})
@@ -155,7 +155,7 @@ def fetch_dealers(request, state="All"):
             logger.debug(f"Retrieved {len(dealers)} dealers.")
             return json_response({"status": 200, "dealers": dealers})
         logger.error("Failed to fetch dealers from backend API.")
-        return json_response({"status": 500, "error": "Failed to fetch dealers"}, 
+        return json_response({"status": 500, "error": "Failed to fetch dealers"},
                              status=500)
     except Exception:
         logger.error("Exception in fetch_dealers", exc_info=True)
