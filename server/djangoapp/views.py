@@ -16,8 +16,11 @@ from .restapis import (
     analyze_review_sentiments
 )
 
+# Initialize logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.DEBUG)  # Ensure logger captures debug-level logs
+
+# Configure a stream handler if none exists
 if not logger.handlers:
     handler = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -123,7 +126,7 @@ def get_cars(request):
                 for cm in car_models]
         logger.info(f"Retrieved {len(cars)} car models successfully.")
         return json_response({"CarModels": cars})
-    except OperationalError as exc:
+    except OperationalError:
         logger.error(
             "Database table not found. Have you run migrations?", exc_info=True
         )
@@ -154,8 +157,8 @@ def fetch_dealers(request, state="All"):
         logger.error("Failed to fetch dealers from backend API.")
         return json_response({"status": 500, "error": "Failed to fetch dealers"}, 
                              status=500)
-    except Exception as exc:
-        logger.error(f"Exception in fetch_dealers: {exc}")
+    except Exception:
+        logger.error("Exception in fetch_dealers", exc_info=True)
         return json_response(
             {"status": 500, "error": "Internal Server Error"}, status=500
         )
@@ -172,8 +175,8 @@ def get_dealer_details(request, dealer_id):
             return json_response({"status": 200, "dealer": dealer})
         logger.warning(f"Dealer with ID {dealer_id} not found.")
         return json_response({"status": 404, "error": "Dealer not found"}, status=404)
-    except Exception as exc:
-        logger.error(f"Exception in get_dealer_details: {exc}")
+    except Exception:
+        logger.error("Exception in get_dealer_details", exc_info=True)
         return json_response(
             {"status": 500, "error": "Internal Server Error"}, status=500
         )
@@ -197,8 +200,8 @@ def get_dealer_reviews(request, dealer_id):
             return json_response({"status": 200, "reviews": reviews})
         logger.warning(f"No reviews found for dealer ID {dealer_id}.")
         return json_response({"status": 404, "error": "No reviews found"}, status=404)
-    except Exception as exc:
-        logger.error(f"Exception in get_dealer_reviews: {exc}")
+    except Exception:
+        logger.error("Exception in get_dealer_reviews", exc_info=True)
         return json_response(
             {"status": 500, "error": "Internal Server Error"}, status=500
         )
@@ -234,13 +237,14 @@ def add_review(request):
             return json_response(
                 {"status": 200, "message": "Review posted successfully"}
             )
-        logger.error("Failed to post review via backend API. Response: " +
-                     str(response))
+        logger.error(
+            "Failed to post review via backend API. Response: " + str(response)
+        )
         return json_response(
             {"status": 500, "message": "Error in posting review"}, status=500
         )
     except Exception:
-        logger.error("Exception in add_review")
+        logger.error("Exception in add_review", exc_info=True)
         return json_response(
             {"status": 500, "message": "Internal Server Error"}, status=500
         )
