@@ -7,7 +7,6 @@ This project is the capstone for IBM’s Full-Stack Application Development Cert
 - [Overview](#overview)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
-- [Project Structure](#project-structure)
 - [Setup and Deployment](#setup-and-deployment)
   - [Backend (Django & Node.js Microservices)](#backend-django--nodejs-microservices)
   - [Frontend (React)](#frontend-react)
@@ -42,33 +41,6 @@ The application uses Django as the primary back‑end, integrates two separate N
 - **Containerization:** Docker, Docker Compose
 - **Cloud & Deployment:** IBM Code Engine, Kubernetes (configurable)
 - **Tools:** Git, GitHub, Virtual Environments (virtualenv)
-
-## Project Structure
-
-```
-xrwvm-fullstack_developer_capstone/
-├── server/
-│   ├── djangoproj/                # Django project folder
-│   ├── djangoapp/                 # Django application (API, views, models, etc.)
-│   ├── database/                  # Node.js microservice for dealer details and reviews
-│   ├── carsInventory/             # Node.js microservice for car inventory
-│   │   ├── data/                  # Contains car_records.json
-│   │   ├── inventory.js           # Mongoose schema for car inventory
-│   │   ├── app.js                 # Main Node.js server for car inventory
-│   │   ├── package.json           # Node.js project configuration
-│   │   └── Dockerfile             # Dockerfile for the car inventory service
-│   └── frontend/                  # React application
-│       ├── public/
-│       └── src/
-│           ├── components/
-│           │   ├── Dealers/
-│           │   │   ├── Dealer.jsx
-│           │   │   └── SearchCars.jsx
-│           │   └── Header/Header.jsx
-│           ├── App.js
-│           └── index.js
-└── README.md
-```
 
 ## Setup and Deployment
 
