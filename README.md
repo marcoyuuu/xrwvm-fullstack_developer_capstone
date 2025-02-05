@@ -1,59 +1,120 @@
 # Full-Stack Car Dealership Application
 
-This project is the capstone for IBM’s Full-Stack Application Development Certification. It is a complete full-stack web application that demonstrates proficiency in front‑end and back‑end technologies. The application serves as a Car Dealership website, allowing users to view dealer details, reviews, and search the car inventory using dynamic filters.
+This project is the capstone for IBM’s Full-Stack Application Development Certification. It is a complete full-stack web application that demonstrates proficiency in front‑end and back‑end technologies. The application is a Car Dealership website where users can view dealer details, read and post reviews, and search an inventory of cars using dynamic filters.
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
 - [Setup and Deployment](#setup-and-deployment)
   - [Backend (Django & Node.js Microservices)](#backend-django--nodejs-microservices)
   - [Frontend (React)](#frontend-react)
 - [Usage](#usage)
 - [Testing](#testing)
 - [CI/CD and Containerization](#cicd-and-containerization)
+- [Replication Instructions](#replication-instructions)
 - [License](#license)
 
 ## Overview
 
-The Car Dealership application provides the following functionality:
-- **Dealer Browsing:** Users can view a list of dealers, select a dealer, and see details such as address, reviews, and additional dealer information.
+The Car Dealership application provides:
+- **Dealer Browsing:** Users can browse a list of dealers, view details (address, reviews, etc.), and access the car inventory search.
 - **Reviews:** Authenticated users can post and view reviews for each dealer.
-- **Car Inventory Search:** Users can filter and search through a car inventory by make, model, year, mileage, and price.
+- **Car Inventory Search:** Users can filter and search car listings by make, model, year, mileage, and price.
 - **User Authentication:** Secure login, registration, and logout functionalities.
 
-The application uses Django as the primary back‑end, integrates two separate Node.js microservices (one for dealer details/reviews and one for car inventory), and a React front‑end for a dynamic user experience.
+The back end is built using Django, with two Node.js microservices:
+1. **Dealer/Reviews Service:** Manages dealer details and reviews.
+2. **Car Inventory Service:** Manages car inventory data using MongoDB and Mongoose.
+
+The front end is built with React, with components for dealers, reviews, and car inventory search.
 
 ## Features
 
-- **Dynamic Car Inventory Search:** Filter car listings by various criteria in real time.
-- **Responsive User Interface:** A polished and modern UI built with React.
-- **Microservice Architecture:** Separate Node.js services manage dealership data and car inventory.
-- **Secure Authentication:** User authentication is implemented using Django.
-- **Containerization Ready:** Dockerized services for easy deployment and scaling.
+- **Dynamic Inventory Search:** Filter car listings in real time.
+- **Responsive and Modern UI:** Polished React interface with professional styling.
+- **Microservice Architecture:** Separate Node.js services for dealer/reviews and car inventory.
+- **Secure Authentication:** Implemented using Django.
+- **Containerized Deployment:** Fully Dockerized services using Docker Compose.
+- **Cloud Ready:** Configurable for deployment on IBM Code Engine and Kubernetes.
 
 ## Technology Stack
 
 - **Frontend:** React, HTML5, CSS3, Bootstrap
 - **Backend:** Django, Node.js, Express, Python
-- **Database:** MongoDB (using Mongoose for Node.js microservices)
+- **Database:** MongoDB (with Mongoose)
 - **Containerization:** Docker, Docker Compose
-- **Cloud & Deployment:** IBM Code Engine, Kubernetes (configurable)
-- **Tools:** Git, GitHub, Virtual Environments (virtualenv)
+- **Deployment:** IBM Code Engine, Kubernetes
+- **Tools:** Git, GitHub, Virtualenv
+
+## Project Structure
+
+The project is organized as follows:
+
+```
+xrwvm-fullstack_developer_capstone/
+├── server/
+│   ├── djangoproj/                # Django project configuration files
+│   │   ├── asgi.py                # ASGI configuration for Django
+│   │   ├── settings.py            # Django settings (including static files, DB, allowed hosts, etc.)
+│   │   ├── urls.py                # Global URL configuration for Django
+│   │   └── wsgi.py                # WSGI configuration for Django
+│   ├── djangoapp/                 # Django application containing API endpoints and views
+│   │   ├── __init__.py            # Initialization file
+│   │   ├── admin.py               # Django admin configuration
+│   │   ├── apps.py                # Application configuration
+│   │   ├── models.py              # Django models (CarMake, CarModel, etc.)
+│   │   ├── populate.py            # Data population script for initial car data
+│   │   ├── restapis.py            # Helper functions to call Node.js microservices (includes searchcars_request)
+│   │   ├── urls.py                # Application-specific URL configuration
+│   │   └── views.py               # Django views handling API requests (login, dealer details, reviews, inventory search)
+│   ├── database/                  # Node.js microservice for dealer and reviews data
+│   │   ├── app.js                 # Express server for dealers and reviews
+│   │   ├── Dockerfile             # Dockerfile for dealer/reviews service
+│   │   ├── docker-compose.yml     # Docker Compose file for dealer/reviews service (and associated MongoDB)
+│   │   └── package.json           # Node.js configuration for dealer/reviews service
+│   ├── carsInventory/             # Node.js microservice for car inventory
+│   │   ├── data/                  # Contains car_records.json (inventory data)
+│   │   ├── inventory.js           # Mongoose schema for car inventory
+│   │   ├── app.js                 # Express server for car inventory
+│   │   ├── Dockerfile             # Dockerfile for car inventory service
+│   │   ├── docker-compose.yml     # Docker Compose file for car inventory service (and associated MongoDB)
+│   │   └── package.json           # Node.js configuration for car inventory service
+│   └── frontend/                  # React client application
+│       ├── public/                # Public assets (HTML, favicon, etc.)
+│       └── src/
+│           ├── components/        # React components
+│           │   ├── Dealers/       # Components related to dealers and reviews
+│           │   │   ├── Dealer.jsx     # Dealer details and reviews page
+│           │   │   └── SearchCars.jsx # Car inventory search component
+│           │   └── Header/        # Header component (navigation bar)
+│           │       └── Header.jsx
+│           ├── App.js             # Main React routing and component integration
+│           └── index.js           # Entry point for React
+└── README.md                      # This file: project overview, setup, and usage instructions
+```
+
+### Detailed Explanation:
+- **Djangoproj:** Contains all core Django configuration files.  
+- **Djangoapp:** Implements API endpoints and views (authentication, dealers, reviews, and inventory search).  
+- **Database:** Node.js microservice managing dealer and reviews data with its own Docker configuration.  
+- **CarsInventory:** New Node.js microservice that provides car inventory data via MongoDB. It includes a Mongoose model (`inventory.js`), a main server file (`app.js`), and is Dockerized with a Dockerfile and docker-compose.yml.  
+- **Frontend:** A React application with components for displaying dealer information, reviews, and a new SearchCars component for car inventory filtering.
 
 ## Setup and Deployment
 
 ### Backend (Django & Node.js Microservices)
 
-#### 1. Clone the Repository and Navigate to the Server Directory
+#### A. Clone the Repository and Navigate to the Server Directory
 
 ```bash
 git clone https://github.com/marcoyuuu/xrwvm-fullstack_developer_capstone.git
 cd /home/project/xrwvm-fullstack_developer_capstone/server
 ```
 
-#### 2. Set Up the Django Environment
+#### B. Set Up the Django Environment
 
 ```bash
 # Create and activate the virtual environment
@@ -73,59 +134,59 @@ python3 manage.py collectstatic --noinput
 python3 manage.py runserver
 ```
 
-#### 3. Start the Node.js Microservices
-
-##### Dealer/Reviews Microservice  
-*(Assuming you have previously set this up in the `database` folder.)*
-
-##### Car Inventory Microservice
-
-Navigate to the `carsInventory` directory, install dependencies, and use Docker Compose to build and run the service:
+#### C. Start the Dealer/Reviews Microservice
 
 ```bash
-cd /home/project/xrwvm-fullstack_developer_capstone/server/carsInventory
-npm install
-
-# If needed, stop any existing containers:
-docker-compose down
-
-# Build and run the microservice (along with MongoDB) in detached mode
+cd database
 docker-compose up --build -d
-
-# Verify containers are running
 docker ps
 ```
 
-### Frontend (React)
+*This builds and runs the Node.js service (for dealer/reviews) along with its MongoDB container.*
 
-#### 1. Navigate to the Frontend Directory and Build the Client
+#### D. Start the Car Inventory Microservice
 
 ```bash
-cd /home/project/xrwvm-fullstack_developer_capstone/server/frontend
+cd ../carsInventory
+npm install
+docker-compose up --build -d
+docker ps
+```
+
+*This builds and runs the Node.js car inventory service and its MongoDB container.*
+
+### Frontend (React)
+
+#### 1. Build the Client
+
+```bash
+cd ../frontend
 npm install
 npm run build
 ```
 
-The built static files will be served by Django.
+*The production build is created in the `build` folder and will be served as static files by Django.*
 
 ---
 
 ## Usage
 
 - **Home Page:**  
-  Access the home page at:  
+  Access the application at:  
   `https://marcoyu-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/`
 
 - **Dealer Page:**  
-  View a dealer’s details, reviews, and click the “Search Cars” button. For example:  
-  `https://marcoyu-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealer/17`
+  Navigate to a dealer’s page, e.g.:  
+  `https://marcoyu-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealer/17`  
+  Here, you will see the dealer details, reviews, and a professionally styled **Search Cars** button.
 
 - **Search Cars:**  
-  Clicking the “Search Cars” button navigates to the search component. Use the dropdown filters (make, model, year, mileage, price) to filter the car inventory. For instance, test with:  
-  `https://marcoyu-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchcars/17`
+  Clicking the **Search Cars** button takes you to the search page:  
+  `https://marcoyu-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/searchcars/17`  
+  Use dropdowns to filter by make, model, year, mileage, and price.
 
 - **API Endpoints:**  
-  You can also test individual API endpoints directly (using Postman or a browser), such as:  
+  You can test individual endpoints, for example:  
   - Dealer details: `/djangoapp/api/dealer/{id}/`  
   - Inventory search: `/djangoapp/get_inventory/{dealer_id}?make=Toyota`
 
@@ -134,41 +195,78 @@ The built static files will be served by Django.
 ## Testing
 
 - **Direct API Testing:**  
-  Use Postman or your browser to verify API endpoints, for example:  
-  ```
+  Test endpoints using Postman or your browser, e.g.:  
+  ```bash
   http://127.0.0.1:8000/djangoapp/get_inventory/1?make=Toyota
   ```
-
 - **UI Testing:**  
-  Navigate through the React app to ensure pages render correctly, filtering works, and the overall user experience is smooth.
+  Navigate through the React application, test the dealer page, and verify that the Search Cars component displays and filters data correctly.
 
 ---
 
 ## CI/CD and Containerization
 
 - **Docker Compose:**  
-  The car inventory microservice is containerized using Docker and orchestrated with Docker Compose. The provided `docker-compose.yml` in the `carsInventory` folder handles both MongoDB and the Node.js service.
-  
-- **Kubernetes & IBM Code Engine:**  
-  The project is configured for deployment on IBM Code Engine and can be adapted to run in a Kubernetes environment.
+  Both Node.js microservices (Dealer/Reviews and Car Inventory) are containerized using Docker and managed via Docker Compose.
+- **Deployment:**  
+  The project is ready for deployment on IBM Code Engine and can be extended to run in Kubernetes.
+
+---
+
+## Replication Instructions
+
+To replicate the project setup on your local machine or a cloud environment, follow these commands:
+
+### 1. Clone Repository and Set Up Django
+
+```bash
+# Clone the repository and navigate to server directory
+git clone https://github.com/marcoyuuu/xrwvm-fullstack_developer_capstone.git
+cd /home/project/xrwvm-fullstack_developer_capstone/server
+
+# Set up Django environment
+pip install virtualenv
+virtualenv djangoenv
+source djangoenv/bin/activate
+python3 -m pip install -U -r requirements.txt
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py collectstatic --noinput
+python3 manage.py runserver
+```
+
+### 2. Start Dealer/Reviews Microservice
+
+```bash
+cd database
+docker-compose up --build -d
+docker ps
+```
+
+### 3. Start Car Inventory Microservice
+
+```bash
+cd ../carsInventory
+npm install
+docker-compose up --build -d
+docker ps
+```
+
+### 4. Build React Frontend
+
+```bash
+cd ../frontend
+npm install
+npm run build
+```
+
+### 5. Access the Application
+
+Open your browser at:  
+`https://marcoyu-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/`
 
 ---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-## Replicating the Setup
-
-To replicate this project on your own machine or in a cloud environment, follow these steps:
-
-1. **Clone the repository** and navigate to the server directory.
-2. **Set up the Django environment** as described above.
-3. **Start the Node.js microservices** using Docker Compose.
-4. **Build and deploy the React front-end**.
-5. **Configure environment variables** (in `.env`) as needed for your deployment.
-6. **Run and test the application** using the provided URLs and API endpoints.
-
-By following these instructions, you will have a fully functional, professional-grade car dealership application. Enjoy exploring the project, and feel free to customize it further!
