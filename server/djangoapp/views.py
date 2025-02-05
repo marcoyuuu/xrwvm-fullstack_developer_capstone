@@ -13,7 +13,8 @@ from .restapis import (
     backend_url,
     get_request,
     post_review,
-    analyze_review_sentiments
+    analyze_review_sentiments,
+    searchcars_request
 )
 
 # Initialize logger
@@ -195,3 +196,25 @@ def add_review(request):
     except Exception:
         logger.exception("Exception in add_review")
         return json_response({"status": 500, "message": "Internal Server Error"}, status=500)
+
+def get_inventory(request, dealer_id):
+    data = request.GET  # Get query parameters
+    if dealer_id:
+        # Determine which filter is provided; default to retrieving all cars for the dealer.
+        if 'year' in data:
+            endpoint = f"/carsbyyear/{dealer_id}/{data['year']}"
+        elif 'make' in data:
+            endpoint = f"/carsbymake/{dealer_id}/{data['make']}"
+        elif 'model' in data:
+            endpoint = f"/carsbymodel/{dealer_id}/{data['model']}"
+        elif 'mileage' in data:
+            endpoint = f"/carsbymaxmileage/{dealer_id}/{data['mileage']}"
+        elif 'price' in data:
+            endpoint = f"/carsbyprice/{dealer_id}/{data['price']}"
+        else:
+            endpoint = f"/cars/{dealer_id}"
+ 
+        cars = searchcars_request(endpoint)
+        return JsonResponse({"status": 200, "cars": cars})
+    else:
+        return JsonResponse({"status": 400, "message": "Bad Request"})

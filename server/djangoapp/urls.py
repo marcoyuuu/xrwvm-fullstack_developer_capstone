@@ -74,4 +74,5 @@ urlpatterns = [
         TemplateView.as_view(
             template_name="favicon.ico"),
         name='favicon'),
+    path('get_inventory/<int:dealer_id>', views.get_inventory, name='get_inventory'),
 ]

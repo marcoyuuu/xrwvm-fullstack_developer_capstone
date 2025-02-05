@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  mongo_db:
+    container_name: carsInventory_mongo
+    image: mongo:latest
+    ports:
+      - 27018:27017
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+  api:
+    container_name: carsInventory_api
+    build: .
+    image: carsinventory
+    ports:
+      - 3050:3050
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_data: {}

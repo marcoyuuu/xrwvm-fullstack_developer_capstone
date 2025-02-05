@@ -23,6 +23,7 @@ load_dotenv()
 # Retrieve environment variables
 backend_url = os.getenv("backend_url", "http://localhost:3030")
 sentiment_analyzer_url = os.getenv("sentiment_analyzer_url", "http://localhost:5050/analyze")
+searchcars_url = os.getenv('searchcars_url', default="http://localhost:3050/")
 
 logger.info(f"Using backend_url: {backend_url}")
 logger.info(f"Using sentiment_analyzer_url: {sentiment_analyzer_url}")
@@ -81,6 +82,23 @@ def post_review(data_dict):
     except json.JSONDecodeError as e:
         logger.error(f"JSON decode error for POST request to {request_url}: {e}")
         return {"status": "Failed", "message": "Invalid JSON response"}
+
+def searchcars_request(endpoint, **kwargs):
+    params = ""
+    if kwargs:
+        # Construct query string parameters (if any)
+        for key, value in kwargs.items():
+            params += f"{key}={value}&"
+    # Build the full URL by concatenating the searchcars_url, endpoint, and query parameters
+    request_url = searchcars_url + endpoint + "?" + params
+    print("GET from {}".format(request_url))
+    try:
+        response = requests.get(request_url)
+        return response.json()
+    except Exception as e:
+        print("Network exception occurred:", e)
+    finally:
+        print("GET request call complete!")
 
 __all__ = [
     'backend_url',
