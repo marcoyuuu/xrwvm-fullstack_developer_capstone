@@ -29,11 +29,9 @@ const Dealer = () => {
                 method: "GET"
             });
             const retobj = await res.json();
-
             if (retobj.status === 200) {
                 setDealer(retobj.dealer);
             }
-
         } catch (error) {
             console.error("Error fetching dealer:", error);
         }
@@ -46,7 +44,6 @@ const Dealer = () => {
                 method: "GET"
             });
             const retobj = await res.json();
-
             if (retobj.status === 200) {
                 if (retobj.reviews.length > 0) {
                     setReviews(retobj.reviews);
@@ -100,6 +97,26 @@ const Dealer = () => {
                 <h4 style={{ color: "grey" }}>
                     {dealer.city}, {dealer.address}, Zip - {dealer.zip}, {dealer.state}
                 </h4>
+                {/* Improved "Search Cars" button */}
+                <div style={{ marginTop: "10px", textAlign: "center" }}>
+                    <Link 
+                        to={`/searchcars/${id}`} 
+                        style={{ 
+                            display: "inline-block",
+                            backgroundColor: "#6f42c1", // purple background
+                            color: "#fff", 
+                            padding: "8px 16px", 
+                            borderRadius: "5px", 
+                            textDecoration: "none", 
+                            fontSize: "1rem",
+                            transition: "background-color 0.3s ease, transform 0.3s ease" 
+                        }}
+                        onMouseOver={(e) => { e.target.style.backgroundColor = "#5936a2"; }}
+                        onMouseOut={(e) => { e.target.style.backgroundColor = "#6f42c1"; }}
+                    >
+                        Search Cars
+                    </Link>
+                </div>
             </div>
             <div className="reviews_panel">
                 {reviews.length === 0 && !unreviewed ? (
