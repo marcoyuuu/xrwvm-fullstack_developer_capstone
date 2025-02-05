@@ -7,19 +7,21 @@ import Header from '../Header/Header';
 import review_icon from "../assets/reviewicon.png";
 
 const Dealers = () => {
+  // Original list of dealers fetched from API (used for resetting filter)
+  const [originalDealers, setOriginalDealers] = useState([]);
   const [dealersList, setDealersList] = useState([]);
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("All");
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Base URLs for dealers endpoints (API)
+  // Base URL for dealers endpoints (API)
   const baseDealersUrl = "/djangoapp/api/dealers/";
 
-  // Fetch all dealers (used on component mount)
+  // Fetch all dealers on component mount
   const get_dealers = useCallback(async () => {
     try {
       const res = await fetch(baseDealersUrl, { method: "GET" });
       const retobj = await res.json();
-      // Check whether the response is wrapped (has a status key)
       let all_dealers = [];
       if (retobj.status === 200 && retobj.dealers) {
         all_dealers = Array.from(retobj.dealers);
@@ -28,18 +30,19 @@ const Dealers = () => {
       } else {
         console.error("Unexpected API format:", retobj);
       }
+      // Set original and displayed dealers
+      setOriginalDealers(all_dealers);
+      setDealersList(all_dealers);
       // Build state list from all dealers
       const statesArr = all_dealers.map(dealer => dealer.state);
       setStates([...new Set(statesArr)]);
-      setDealersList(all_dealers);
     } catch (error) {
       console.error("Error fetching dealers:", error);
     }
   }, [baseDealersUrl]);
 
-  // Filter dealers by state
+  // Filter dealers based on state (used if filtering via dropdown, can be removed if desired)
   const filterDealers = useCallback(async (state) => {
-    // When filtering by state, ensure the trailing slash is present
     const url = state === "All" ? baseDealersUrl : `${baseDealersUrl}${state}/`;
     console.log("Filter URL:", url);
     try {
@@ -59,6 +62,24 @@ const Dealers = () => {
     }
   }, [baseDealersUrl]);
 
+  // Handle search input changes
+  const handleInputChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    // Filter the original list based on the search query (case-insensitive)
+    const filtered = originalDealers.filter(dealer =>
+      dealer.state.toLowerCase().includes(query.toLowerCase())
+    );
+    setDealersList(filtered);
+  };
+
+  // When the input loses focus, reset the list if the query is empty
+  const handleLostFocus = () => {
+    if (!searchQuery) {
+      setDealersList(originalDealers);
+    }
+  };
+
   // On component mount, load all dealers
   useEffect(() => {
     get_dealers();
@@ -66,15 +87,20 @@ const Dealers = () => {
 
   const isLoggedIn = sessionStorage.getItem("username") !== null;
 
-  const handleStateChange = (e) => {
-    const state = e.target.value;
-    setSelectedState(state);
-    filterDealers(state);
-  };
-
   return (
     <div>
       <Header />
+      <div className="search-container" style={{ margin: "20px" }}>
+        {/* Search input for filtering states */}
+        <input
+          type="text"
+          placeholder="Search states..."
+          onChange={handleInputChange}
+          onBlur={handleLostFocus}
+          value={searchQuery}
+          style={{ padding: "8px", width: "200px" }}
+        />
+      </div>
 
       <table className='table'>
         <thead>
@@ -84,20 +110,7 @@ const Dealers = () => {
             <th>City</th>
             <th>Address</th>
             <th>Zip</th>
-            <th>
-              <select
-                name="state"
-                id="state"
-                onChange={handleStateChange}
-                value={selectedState}
-              >
-                <option value="" disabled hidden>State</option>
-                <option value="All">All States</option>
-                {states.map((state, index) => (
-                  <option key={index} value={state}>{state}</option>
-                ))}
-              </select>
-            </th>
+            <th>State</th>
             {isLoggedIn && <th>Review Dealer</th>}
           </tr>
         </thead>

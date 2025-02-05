@@ -70,7 +70,7 @@ const Header = () => {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "darkturquoise", height: "1in" }}>
+    <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "mediumspringgreen", height: "1in" }}>
       <div className="container-fluid">
         <h2 style={{ paddingRight: "5%" }}>Dealerships</h2>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">

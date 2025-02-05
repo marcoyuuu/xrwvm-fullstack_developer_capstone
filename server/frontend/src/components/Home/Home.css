@@ -10,20 +10,40 @@
   width: 50%;
   margin-top: 50px;
   align-self: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
 }
 
 .banner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  padding: 20px;
+  background-color: #f8f8f8;
 }
 
 .banner h5 {
   margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
 }
 
-.banner .btn {
-  background-color: aqua;
+.view-dealers-btn {
+  background-color: plum;           /* Bold purple background */
+  color: #fff;                      /* White text for contrast */
   margin: 10px;
+  padding: 12px 24px;               /* Slightly larger padding for better prominence */
+  font-size: 1.1rem;
+  border: 2px solid plum;           /* Matching border to define shape */
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);  /* Subtle shadow for depth */
+}
+
+.view-dealers-btn:hover {
+  background-color: darkorchid;     /* A deeper purple on hover */
+  border-color: darkorchid;
+  transform: scale(1.05);           /* Slightly enlarge the button */
 }
